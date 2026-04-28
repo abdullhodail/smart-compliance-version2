@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum EntityType {
+  NGO
+  ECOMMERCE
+  SME
+}
+
+enum OrganizationStatus {
+  TRIAL
+  ACTIVE
+  INACTIVE
+}
+
+model User {
+  id             String        @id @default(uuid())
+  email          String        @unique
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  createdAt      DateTime      @default(now())
+}
+
+model Organization {
+  id             String             @id @default(uuid())
+  name           String
+  entityType     EntityType
+  primaryGoal    String
+  status         OrganizationStatus @default(TRIAL)
+  users          User[]
+  assessments    AssessmentResult[]
+  subscriptions  Subscription[]
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+}
+
+model AssessmentResult {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  track          String       // "GOVERNANCE_LITE" or "PDPL"
+  score          Float
+  answersJson    Json         // Flexible storage for answers/checklists
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model Subscription {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  planId         String
+  status         String       // "ACTIVE", "CANCELED", "PAST_DUE"
+  expiresAt      DateTime
+  createdAt      DateTime     @default(now())
+}

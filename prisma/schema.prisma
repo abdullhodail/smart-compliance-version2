@@ -47,9 +47,12 @@ model AssessmentResult {
   organization   Organization @relation(fields: [organizationId], references: [id])
   track          String       // "GOVERNANCE_LITE" or "PDPL"
   score          Float
+  status         String       @default("IN_PROGRESS") // "IN_PROGRESS" or "COMPLETED"
   answersJson    Json         // Flexible storage for answers/checklists
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+
+  @@unique([organizationId, track])
 }
 
 model Subscription {

@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { LayoutDashboard, ShieldCheck, LogOut, Settings, UserCircle } from "lucide-react";
 import { signOut } from "@/app/(auth)/actions";
+import prisma from "@/lib/prisma";
 
 export default async function DashboardLayout({
   children,
@@ -17,9 +18,16 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
+  const dbUser = await prisma.user.findUnique({
+    where: { id: user.id },
+    include: { organization: true }
+  });
+
+  const isNGO = dbUser?.organization?.entityType === "NGO";
+
   const sidebarLinks = [
     { name: "نظرة عامة", href: "/dashboard", icon: LayoutDashboard },
-    { name: "الحوكمة", href: "/dashboard/governance-lite", icon: LayoutDashboard },
+    ...(isNGO ? [{ name: "الحوكمة", href: "/dashboard/governance-lite", icon: LayoutDashboard }] : []),
     { name: "حماية البيانات", href: "/dashboard/pdpl", icon: ShieldCheck },
   ];
 

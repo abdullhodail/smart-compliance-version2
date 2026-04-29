@@ -18,7 +18,7 @@ export default function QuickLogin() {
         {accounts.map((acc) => (
           <form key={acc.email}>
             <input type="hidden" name="email" value={acc.email} />
-            <input type="hidden" name="password" value="Test123456!" />
+            <input type="hidden" name="password" value="12345" />
             <button
               formAction={login}
               className="w-full py-3 px-4 rounded-xl border border-gray-100 bg-gray-50/50 text-sm font-bold text-gray-600 hover:bg-white hover:border-primary/20 hover:text-primary transition-all flex items-center justify-between group"

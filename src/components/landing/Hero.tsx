@@ -46,7 +46,7 @@ export default function Hero() {
                 <ArrowLeft size={20} />
               </Link>
               <Link
-                href="/about"
+                href="#about"
                 className="w-full sm:w-auto px-10 py-4 bg-white text-gray-700 font-bold rounded-2xl border border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-all flex items-center justify-center"
               >
                 تعرف على الحلول

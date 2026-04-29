@@ -17,6 +17,7 @@ export async function submitOnboarding(formData: FormData) {
   const entityType = formData.get("entityType") as EntityType;
   const primaryGoal = formData.get("primaryGoal") as string;
 
+  let targetPath = "/dashboard";
   try {
     // 1. Create the Organization
     const organization = await prisma.organization.create({
@@ -29,26 +30,26 @@ export async function submitOnboarding(formData: FormData) {
     });
 
     // 2. Update the User with the organizationId
-    // Note: We use email to find or create the user in our DB since they just signed up in Supabase
     await prisma.user.upsert({
       where: { email: user.email! },
       update: { organizationId: organization.id },
       create: {
-        id: user.id, // Use the same ID as Supabase for consistency
+        id: user.id,
         email: user.email!,
         organizationId: organization.id,
       },
     });
 
-    // 3. Logic-based Redirection
+    // 3. Logic-based Redirection Path
     if (entityType === "NGO" && primaryGoal === "GOVERNANCE") {
-      redirect("/dashboard/governance-lite");
+      targetPath = "/dashboard/governance-lite";
     } else {
-      redirect("/dashboard/pdpl");
+      targetPath = "/dashboard/pdpl";
     }
   } catch (error) {
     console.error("Onboarding error:", error);
-    // On error, we could redirect to an error page or handle it via a state, 
-    // but for now we satisfy the void return type.
+    // You might want to redirect to an error page or return an error state
   }
+
+  redirect(targetPath);
 }

@@ -13,13 +13,20 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  // Fetch the user's organization from our DB
-  const dbUser = await prisma.user.findUnique({
+  // Fetch the user's organization from our DB (Auto-sync if missing)
+  let dbUser = await prisma.user.findUnique({
     where: { id: user.id },
     include: { organization: true },
   });
 
-  if (!dbUser || !dbUser.organization) {
+  if (!dbUser) {
+    dbUser = await prisma.user.create({
+      data: { id: user.id, email: user.email! },
+      include: { organization: true },
+    });
+  }
+
+  if (!dbUser.organization) {
     redirect("/onboarding");
   }
 

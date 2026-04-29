@@ -4,9 +4,9 @@ import { login } from "../actions";
 
 export default function QuickLogin() {
   const accounts = [
-    { name: "تجربة NGO", email: "ngo@test.com" },
-    { name: "تجربة Ecommerce", email: "ecom@test.com" },
-    { name: "تجربة SME", email: "sme@test.com" },
+    { name: "تجربة NGO", email: "ngo_test@gmail.com" },
+    { name: "تجربة Ecommerce", email: "ecommerce_test@gmail.com" },
+    { name: "تجربة SME", email: "sme_test@gmail.com" },
   ];
 
   return (
@@ -18,7 +18,7 @@ export default function QuickLogin() {
         {accounts.map((acc) => (
           <form key={acc.email}>
             <input type="hidden" name="email" value={acc.email} />
-            <input type="hidden" name="password" value="test123456" />
+            <input type="hidden" name="password" value="Test123456!" />
             <button
               formAction={login}
               className="w-full py-3 px-4 rounded-xl border border-gray-100 bg-gray-50/50 text-sm font-bold text-gray-600 hover:bg-white hover:border-primary/20 hover:text-primary transition-all flex items-center justify-between group"

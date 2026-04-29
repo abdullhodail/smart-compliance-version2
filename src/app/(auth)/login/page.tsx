@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { login } from "../actions";
+import QuickLogin from "./QuickLogin";
 
 export default function LoginPage({
   searchParams,
@@ -67,6 +68,8 @@ export default function LoginPage({
           إنشاء حساب جديد
         </Link>
       </p>
+
+      <QuickLogin />
     </div>
   );
 }

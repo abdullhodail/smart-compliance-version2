@@ -20,9 +20,9 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "الرئيسية", href: "/" },
-    { name: "عن المنصة", href: "/about" },
-    { name: "الشركاء", href: "/partners" },
-    { name: "الأسعار", href: "/pricing" },
+    { name: "المميزات", href: "#features" },
+    { name: "عن المنصة", href: "#about" },
+    { name: "الأسعار", href: "#pricing" },
   ];
 
   return (
@@ -90,7 +90,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-100 py-6 px-6 flex flex-col gap-6 shadow-xl animate-in slide-in-from-top duration-300">
+        <div className="md:hidden absolute top-full left-0 right-0 bg-white/98 backdrop-blur-xl border-b border-gray-100 py-6 px-6 flex flex-col gap-6 shadow-2xl animate-in slide-in-from-top duration-300">
           {navLinks.map((link) => (
             <Link
               key={link.name}

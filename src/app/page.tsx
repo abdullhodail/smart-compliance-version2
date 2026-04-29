@@ -9,10 +9,17 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       <Navbar />
-      <Hero />
+      <div id="about">
+        <Hero />
+      </div>
       <StatsStrip />
       <TrustChips />
-      <Features />
+      <div id="features">
+        <Features />
+      </div>
+      <div id="pricing">
+        {/* We can add a pricing section here later or just point to footer for now */}
+      </div>
       <Footer />
     </main>
   );

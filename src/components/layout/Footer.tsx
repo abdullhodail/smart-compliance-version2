@@ -30,10 +30,14 @@ export default function Footer() {
           <div>
             <h4 className="text-white font-bold mb-6">المنصة</h4>
             <ul className="space-y-4">
-              {["عن المنصة", "المميزات", "الأسعار", "طلب عرض"].map((item) => (
-                <li key={item}>
-                  <Link href="#" className="text-gray-400 hover:text-secondary transition-colors">
-                    {item}
+              {[
+                { name: "عن المنصة", href: "#about" },
+                { name: "المميزات", href: "#features" },
+                { name: "الأسعار", href: "#pricing" },
+              ].map((item) => (
+                <li key={item.name}>
+                  <Link href={item.href} className="text-gray-400 hover:text-secondary transition-colors">
+                    {item.name}
                   </Link>
                 </li>
               ))}
@@ -44,10 +48,15 @@ export default function Footer() {
           <div>
             <h4 className="text-white font-bold mb-6">الدعم والنظام</h4>
             <ul className="space-y-4">
-              {["سياسة الخصوصية", "شروط الاستخدام", "مركز المساعدة", "اتصل بنا"].map((item) => (
-                <li key={item}>
-                  <Link href="#" className="text-gray-400 hover:text-secondary transition-colors">
-                    {item}
+              {[
+                { name: "سياسة الخصوصية", href: "#" },
+                { name: "شروط الاستخدام", href: "#" },
+                { name: "مركز المساعدة", href: "#" },
+                { name: "اتصل بنا", href: "#" },
+              ].map((item) => (
+                <li key={item.name}>
+                  <Link href={item.href} className="text-gray-400 hover:text-secondary transition-colors">
+                    {item.name}
                   </Link>
                 </li>
               ))}

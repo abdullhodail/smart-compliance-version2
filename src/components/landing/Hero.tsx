@@ -29,12 +29,12 @@ export default function Hero() {
             </div>
 
             <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 leading-[1.1] mb-6">
-              حوكمة ذكية لبيئة <br />
-              <span className="text-primary italic">أكثر امتثالاً</span>
+              منصة سعودية موحدة… <br />
+              <span className="text-primary italic">للحوكمة والامتثال الرقمي</span>
             </h1>
 
             <p className="text-xl text-gray-600 mb-10 max-w-2xl leading-relaxed">
-              نساعد الجهات غير الربحية والمنشآت الصغيرة والمتوسطة على تحقيق أعلى معايير الحوكمة والامتثال عبر تجربة رقمية مبسطة ومؤتمتة بالكامل.
+              نساعد الجهات غير الربحية والمنشآت الصغيرة والمتوسطة على تطبيق معايير الحوكمة وحماية البيانات (PDPL) عبر تجربة رقمية مبسطة ومؤتمتة بالكامل.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4">

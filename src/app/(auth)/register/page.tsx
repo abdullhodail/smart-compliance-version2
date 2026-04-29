@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { signup } from "../actions";
 
-export default function RegisterPage({
+export default async function RegisterPage({
   searchParams,
 }: {
-  searchParams: { error?: string };
+  searchParams: Promise<{ error?: string }>;
 }) {
+  const { error } = await searchParams;
   return (
     <div className="space-y-8">
       <div className="text-right">
@@ -14,9 +15,9 @@ export default function RegisterPage({
       </div>
 
       <form className="space-y-6">
-        {searchParams.error && (
+        {error && (
           <div className="p-4 bg-red-50 border border-red-100 rounded-xl text-red-600 text-sm text-right">
-            {searchParams.error}
+            {error}
           </div>
         )}
 

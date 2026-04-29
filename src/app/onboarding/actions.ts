@@ -13,7 +13,7 @@ export async function submitOnboarding(formData: FormData) {
     return redirect("/login");
   }
 
-  const name = formData.get("organizationName") as string;
+  const name = (formData.get("organizationName") as string) || "جهة جديدة";
   const entityType = formData.get("entityType") as EntityType;
   const primaryGoal = formData.get("primaryGoal") as string;
 

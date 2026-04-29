@@ -2,11 +2,12 @@ import Link from "next/link";
 import { login } from "../actions";
 import QuickLogin from "./QuickLogin";
 
-export default function LoginPage({
+export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: { error?: string };
+  searchParams: Promise<{ error?: string }>;
 }) {
+  const { error } = await searchParams;
   return (
     <div className="space-y-8">
       <div className="text-right">
@@ -15,9 +16,9 @@ export default function LoginPage({
       </div>
 
       <form className="space-y-6">
-        {searchParams.error && (
+        {error && (
           <div className="p-4 bg-red-50 border border-red-100 rounded-xl text-red-600 text-sm text-right">
-            {searchParams.error}
+            {error}
           </div>
         )}
 

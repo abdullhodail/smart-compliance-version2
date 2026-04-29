@@ -14,17 +14,12 @@ export default async function DashboardPage() {
   }
 
   // Fetch the user's organization from our DB (Auto-sync if missing)
-  let dbUser = await prisma.user.findUnique({
+  const dbUser = await prisma.user.upsert({
     where: { id: user.id },
+    update: {},
+    create: { id: user.id, email: user.email! },
     include: { organization: true },
   });
-
-  if (!dbUser) {
-    dbUser = await prisma.user.create({
-      data: { id: user.id, email: user.email! },
-      include: { organization: true },
-    });
-  }
 
   if (!dbUser.organization) {
     redirect("/onboarding");

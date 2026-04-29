@@ -31,7 +31,7 @@ export async function submitOnboarding(formData: FormData) {
 
     // 2. Update the User with the organizationId
     await prisma.user.upsert({
-      where: { email: user.email! },
+      where: { id: user.id },
       update: { organizationId: organization.id },
       create: {
         id: user.id,

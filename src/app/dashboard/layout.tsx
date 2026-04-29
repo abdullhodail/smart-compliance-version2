@@ -19,20 +19,15 @@ export default async function DashboardLayout({
   }
 
   // Ensure user exists in our DB (Auto-sync for manually created Supabase users)
-  let dbUser = await prisma.user.findUnique({
+  const dbUser = await prisma.user.upsert({
     where: { id: user.id },
+    update: {},
+    create: {
+      id: user.id,
+      email: user.email!,
+    },
     include: { organization: true }
   });
-
-  if (!dbUser) {
-    dbUser = await prisma.user.create({
-      data: {
-        id: user.id,
-        email: user.email!,
-      },
-      include: { organization: true }
-    });
-  }
 
   const isNGO = dbUser?.organization?.entityType === "NGO";
 

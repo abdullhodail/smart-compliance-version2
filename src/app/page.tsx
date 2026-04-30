@@ -1,24 +1,25 @@
 import Navbar from "@/components/layout/Navbar";
 import Hero from "@/components/landing/Hero";
-import StatsStrip from "@/components/landing/StatsStrip";
-import TrustChips from "@/components/landing/TrustChips";
+import ProblemSection from "@/components/landing/ProblemSection";
 import Features from "@/components/landing/Features";
+import PricingSection from "@/components/landing/PricingSection";
+import OutcomeSection from "@/components/landing/OutcomeSection";
+import TrustChips from "@/components/landing/TrustChips";
+import CTASection from "@/components/landing/CTASection";
 import Footer from "@/components/layout/Footer";
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-white">
       <Navbar />
-      <div id="about">
-        <Hero />
-      </div>
-      <StatsStrip />
-      <TrustChips />
-      <div id="features">
+      <Hero />
+      <div className="space-y-0">
+        <ProblemSection />
         <Features />
-      </div>
-      <div id="pricing">
-        {/* We can add a pricing section here later or just point to footer for now */}
+        <OutcomeSection />
+        <PricingSection />
+        <TrustChips />
+        <CTASection />
       </div>
       <Footer />
     </main>

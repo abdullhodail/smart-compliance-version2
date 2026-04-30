@@ -1,45 +1,33 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ShieldCheck, LayoutDashboard, FileCheck, Target, Users2, Zap } from "lucide-react";
+import { ClipboardCheck, PieChart, LayoutList, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const features = [
+const steps = [
   {
-    title: "مسار الحوكمة (Governance)",
-    description: "نظام يتعرف على نوع الجهة ويقدم مسار حوكمة مناسب بدون تعقيد إداري، مخصص للقطاع غير الربحي.",
-    icon: LayoutDashboard,
-    color: "bg-blue-500",
-  },
-  {
-    title: "امتثال حماية البيانات (PDPL)",
-    description: "امتثال متكامل لنظام حماية البيانات الشخصية السعودي للمنشآت والمتاجر الإلكترونية والجهات الحكومية.",
-    icon: ShieldCheck,
+    title: "1. جاوب على أسئلة بسيطة",
+    description: "أسئلة مباشرة وسهلة حول طريقة تعاملك مع البيانات، مصممة لأصحاب الأعمال وليس لخبراء القانون.",
+    icon: ClipboardCheck,
     color: "bg-primary",
   },
   {
-    title: "إدارة الشواهد الموحدة",
-    description: "تنظيم وحفظ المستندات الإدارية والشواهد في مكان واحد آمن، مما يسهل عملية المراجعة والتدقيق.",
-    icon: FileCheck,
+    title: "2. اعرف نتيجتك فوراً",
+    description: "تحليل ذكي يوضح لك مستوى الجاهزية الحالي ويحدد مواطن القوة والفجوات التي تحتاج لتنظيم.",
+    icon: PieChart,
     color: "bg-secondary",
   },
   {
-    title: "رؤية فورية للجاهزية",
-    description: "لوحات معلومات ذكية توضح مستوى الامتثال اللحظي مع توصيات واضحة لسد الفجوات التنظيمية.",
-    icon: Zap,
-    color: "bg-amber-500",
+    title: "3. احصل على خطة عمل",
+    description: "توصيات واضحة ومرتبة بالخطوات العملية التي تحتاج اتخاذها لتحقيق الامتثال الكامل.",
+    icon: LayoutList,
+    color: "bg-blue-600",
   },
   {
-    title: "تجربة رقمية موجهة",
-    description: "مسارات عمل مؤتمتة تقودك خطوة بخطوة نحو تحقيق الامتثال الكامل دون الحاجة لخبرة قانونية عميقة.",
-    icon: Target,
-    color: "bg-purple-500",
-  },
-  {
-    title: "دعم فني واستشاري",
-    description: "فريق من الخبراء متاح لمساندتكم في تطبيق المعايير وتجاوز التحديات الرقابية بكفاءة عالية.",
-    icon: Users2,
-    color: "bg-teal-500",
+    title: "4. وثائق جاهزة للتطبيق",
+    description: "احصل على مسودات لسياسات الخصوصية واتفاقيات معالجة البيانات جاهزة للاستخدام في نشاطك.",
+    icon: FileText,
+    color: "bg-teal-600",
   },
 ];
 
@@ -54,7 +42,7 @@ export default function Features() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            حلول رقمية متكاملة لبيئة أعمال نظامية
+            كيف تساعدك منصة الامتثال الذكي؟
           </motion.h2>
           <motion.p
             className="text-lg text-gray-600"
@@ -63,14 +51,14 @@ export default function Features() {
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
           >
-            صممنا منصة الامتثال الذكي لتكون رفيقكم في رحلة التحول الرقمي والتنظيمي، مع التركيز على الكفاءة والبساطة.
+            بسطنا رحلة الامتثال لتكون عملية واضحة تبدأ بتقييم بسيط وتنتهي بتنظيم كامل لمتطلبات حماية البيانات.
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {steps.map((step, index) => (
             <motion.div
-              key={feature.title}
+              key={step.title}
               className="group p-8 rounded-[32px] bg-gray-50 border border-gray-100 hover:bg-white hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -79,15 +67,15 @@ export default function Features() {
             >
               <div className={cn(
                 "w-16 h-16 rounded-2xl flex items-center justify-center mb-8 transition-transform group-hover:scale-110 group-hover:rotate-3 shadow-lg shadow-black/5",
-                feature.color
+                step.color
               )}>
-                <feature.icon className="text-white" size={32} />
+                <step.icon className="text-white" size={32} />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors">
-                {feature.title}
+                {step.title}
               </h3>
               <p className="text-gray-600 leading-relaxed">
-                {feature.description}
+                {step.description}
               </p>
             </motion.div>
           ))}

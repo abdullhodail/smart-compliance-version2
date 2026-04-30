@@ -14,7 +14,8 @@
   --color-secondary: #B49352;
   --color-secondary-light: #D4B87D;
   --color-secondary-dark: #8C703A;
-  --font-cairo: var(--font-cairo), sans-serif;
+  --font-heading: var(--font-ibm), sans-serif;
+  --font-body: var(--font-cairo), sans-serif;
   --font-sans: var(--font-cairo), sans-serif;
 }
 
@@ -28,5 +29,9 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-cairo), sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-ibm), sans-serif;
 }

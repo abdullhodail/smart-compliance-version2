@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import prisma from "@/lib/prisma";
 import { createClient } from "@/utils/supabase/server";
-import { pdplTemplates } from "./content";
+import { pdplQuestions } from "./content";
 import { EntityType } from "@prisma/client";
 
 export async function getPDPLAssessment() {
@@ -38,19 +38,14 @@ export async function updatePDPLProgress(
   entityType: EntityType,
   answers: Record<string, boolean>
 ) {
-  // Calculate score based on the specific template
-  const template = pdplTemplates[entityType];
-  
   let totalWeight = 0;
   let earnedWeight = 0;
 
-  template.forEach(section => {
-    section.items.forEach(item => {
-      totalWeight += item.weight;
-      if (answers[item.id]) {
-        earnedWeight += item.weight;
-      }
-    });
+  pdplQuestions.forEach(question => {
+    totalWeight += question.weight;
+    if (answers[question.id] === true) {
+      earnedWeight += question.weight;
+    }
   });
 
   const score = Math.round((earnedWeight / totalWeight) * 100);

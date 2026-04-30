@@ -18,7 +18,6 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
-  // Ensure user exists in our DB (Auto-sync for manually created Supabase users)
   const dbUser = await prisma.user.upsert({
     where: { id: user.id },
     update: {},
@@ -28,6 +27,10 @@ export default async function DashboardLayout({
     },
     include: { organization: true }
   });
+
+  if (!dbUser.organizationId) {
+    redirect("/onboarding");
+  }
 
   const isNGO = dbUser?.organization?.entityType === "NGO";
 

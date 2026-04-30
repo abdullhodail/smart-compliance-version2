@@ -11,7 +11,7 @@ export default function ProblemSection() {
       color: "bg-blue-50 text-blue-600",
     },
     {
-      title: "ما في سياسة خصوصية في الموقع",
+      title: "لا توجد سياسة خصوصية واضحة في الموقع",
       icon: FileWarning,
       color: "bg-amber-50 text-amber-600",
     },

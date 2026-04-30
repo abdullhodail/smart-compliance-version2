@@ -43,11 +43,11 @@ export default function Hero() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="relative z-10 w-full"
             >
-              <div className="bg-white rounded-[40px] border border-gray-100 shadow-2xl overflow-hidden max-w-md mx-auto w-full">
+              <div className="bg-white rounded-[40px] border border-gray-100 shadow-xl overflow-hidden max-w-md mx-auto w-full">
                 {/* Header */}
                 <div className="p-8 bg-primary text-white text-center">
                   <p className="text-xs font-bold opacity-80 mb-2 uppercase tracking-widest font-body">مؤشر الجاهزية الرقمي</p>
-                  <div className="text-7xl font-black mb-4 font-heading">62%</div>
+                  <div className="text-6xl font-black mb-4 font-heading">62%</div>
                   <div className="w-full h-2 bg-white/20 rounded-full overflow-hidden">
                     <motion.div 
                       className="h-full bg-secondary" 
@@ -68,7 +68,7 @@ export default function Hero() {
                     {[
                       "لا توجد سياسة خصوصية واضحة",
                       "لا يوجد تنظيم لمعالجة البيانات",
-                      "ضعف في إدارة موافقات الأفراد"
+                      "ضعف في إدارة الموافقات"
                     ].map((gap, i) => (
                       <div key={i} className="flex items-center justify-end gap-3 p-3 bg-red-50/50 rounded-xl border border-red-50">
                         <span className="text-sm font-bold text-red-900">{gap}</span>
@@ -88,9 +88,8 @@ export default function Hero() {
                     <div className="h-4 bg-gray-100 rounded-lg w-full" />
                     <div className="h-4 bg-gray-100 rounded-lg w-3/4 mr-auto" />
                   </div>
-                  <div className="p-4 border-2 border-dashed border-gray-100 rounded-2xl flex items-center justify-center gap-2 text-gray-400 font-bold text-sm font-body">
-                    <Download size={16} />
-                    تحميل الخطة الكاملة (مغلق)
+                  <div className="p-4 border-2 border-dashed border-gray-100 rounded-2xl flex items-center justify-center gap-2 text-gray-400 font-bold text-sm font-body text-center">
+                    الخطة الكاملة متاحة بعد التقييم
                   </div>
                 </div>
               </div>

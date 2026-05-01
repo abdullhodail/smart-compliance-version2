@@ -23,15 +23,34 @@ export default async function DashboardLayout({
 
   console.log("[DashboardLayout] Fetching dbUser from Prisma...");
 
-  const dbUser = await prisma.user.upsert({
-    where: { id: user.id },
-    update: {},
-    create: {
-      id: user.id,
-      email: user.email!,
-    },
-    include: { organization: true }
-  });
+  let dbUser;
+  try {
+    // Try find by Supabase auth ID first
+    dbUser = await prisma.user.findUnique({ where: { id: user.id }, include: { organization: true } });
+
+    if (!dbUser) {
+      // ID not found — check if email exists (e.g., user re-registered on a different Supabase project)
+      const existingByEmail = await prisma.user.findUnique({ where: { email: user.email! } });
+
+      if (existingByEmail) {
+        // Reconcile: update the old record's ID to match the new Supabase auth user
+        dbUser = await prisma.user.update({
+          where: { email: user.email! },
+          data: { id: user.id },
+          include: { organization: true },
+        });
+      } else {
+        // Completely new user — create the record
+        dbUser = await prisma.user.create({
+          data: { id: user.id, email: user.email! },
+          include: { organization: true },
+        });
+      }
+    }
+  } catch (error) {
+    console.error("[DashboardLayout] Prisma error:", error);
+    redirect("/login?error=" + encodeURIComponent("خطأ في الاتصال بقاعدة البيانات"));
+  }
 
   if (!dbUser.organizationId) {
     console.log("[DashboardLayout] No organizationId found, redirecting to /onboarding");
@@ -75,13 +94,15 @@ export default async function DashboardLayout({
               <UserCircle size={20} />
               <span className="truncate">{user.email}</span>
            </div>
-          <button
-            formAction={signOut}
-            className="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl transition-all"
-          >
-            <LogOut size={20} />
-            <span className="font-medium">تسجيل الخروج</span>
-          </button>
+          <form action={signOut}>
+            <button
+              type="submit"
+              className="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl transition-all"
+            >
+              <LogOut size={20} />
+              <span className="font-medium">تسجيل الخروج</span>
+            </button>
+          </form>
         </div>
       </aside>
 

@@ -31,16 +31,18 @@ export async function submitOnboarding(formData: FormData) {
       },
     });
 
-    // 2. Update the User with the organizationId
-    await prisma.user.upsert({
-      where: { id: user.id },
-      update: { organizationId: organization.id },
-      create: {
-        id: user.id,
-        email: user.email!,
-        organizationId: organization.id,
-      },
-    });
+    // 2. Link the User to the Organization (handles ID mismatches across Supabase projects)
+    const existingUser = await prisma.user.findUnique({ where: { id: user.id } });
+    if (existingUser) {
+      await prisma.user.update({ where: { id: user.id }, data: { organizationId: organization.id } });
+    } else {
+      const existingByEmail = await prisma.user.findUnique({ where: { email: user.email! } });
+      if (existingByEmail) {
+        await prisma.user.update({ where: { email: user.email! }, data: { id: user.id, organizationId: organization.id } });
+      } else {
+        await prisma.user.create({ data: { id: user.id, email: user.email!, organizationId: organization.id } });
+      }
+    }
 
     // 3. Logic-based Redirection Path
     if (entityType === "NGO" && primaryGoal === "GOVERNANCE") {

@@ -4,9 +4,9 @@ import PDPLDashboard from "./PDPLDashboard";
 export const dynamic = "force-dynamic";
 
 export default async function PDPLPage() {
-  const { assessment, organizationId, entityType } = await getPDPLAssessment();
+  const { assessment, organizationId, entityType, businessActivity } = await getPDPLAssessment();
 
-  const initialAnswers = (assessment?.answersJson as Record<string, boolean>) || {};
+  const initialAnswers = (assessment?.answersJson as Record<string, boolean | "unknown">) || {};
   const initialScore = assessment?.score || 0;
 
   return (
@@ -15,6 +15,7 @@ export default async function PDPLPage() {
       organizationId={organizationId} 
       initialScore={initialScore}
       entityType={entityType}
+      businessActivity={businessActivity}
     />
   );
 }

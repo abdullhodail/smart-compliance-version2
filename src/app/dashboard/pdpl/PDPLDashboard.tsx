@@ -11,15 +11,16 @@ import {
   AlertCircle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { pdplQuestions } from "./content";
+import { pdplQuestions, getQuestionLabel } from "./content";
 import { updatePDPLProgress } from "./actions";
 import { EntityType } from "@prisma/client";
 
 interface Props {
-  initialAnswers: Record<string, boolean>;
+  initialAnswers: Record<string, boolean | "unknown">;
   organizationId: string;
   initialScore: number;
   entityType: EntityType;
+  businessActivity?: string | null;
 }
 
 import PDPLResultView from "./PDPLResultView";
@@ -29,9 +30,10 @@ export default function PDPLDashboard({
   initialAnswers, 
   organizationId, 
   initialScore,
-  entityType 
+  entityType,
+  businessActivity
 }: Props) {
-  const [answers, setAnswers] = useState(initialAnswers);
+  const [answers, setAnswers] = useState<Record<string, boolean | "unknown">>(initialAnswers);
   const [currentStep, setCurrentStep] = useState(0);
   const [view, setView] = useState<"assessment" | "result" | "docs">(
     Object.keys(initialAnswers).length > 0 ? "result" : "assessment"
@@ -44,8 +46,7 @@ export default function PDPLDashboard({
   const progress = ((currentStep + 1) / questions.length) * 100;
 
   const handleAnswer = async (answer: boolean | "unknown") => {
-    const isYes = answer === true;
-    const newAnswers = { ...answers, [currentQuestion.id]: isYes };
+    const newAnswers = { ...answers, [currentQuestion.id]: answer };
     setAnswers(newAnswers);
 
     if (currentStep < questions.length - 1) {
@@ -126,7 +127,7 @@ export default function PDPLDashboard({
           {currentQuestion.category}
         </div>
         <h2 className="text-2xl md:text-3xl font-bold text-gray-900 leading-snug mb-8">
-          {currentQuestion.labels[entityType]}
+          {getQuestionLabel(currentQuestion, entityType, businessActivity)}
         </h2>
 
         <div className="space-y-4 mb-10">

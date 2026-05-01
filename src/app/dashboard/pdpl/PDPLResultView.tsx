@@ -7,7 +7,8 @@ import {
   ArrowRight,
   ShieldCheck,
   TrendingUp,
-  Star
+  Star,
+  HelpCircle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { pdplQuestions } from "./content";
@@ -15,62 +16,68 @@ import { EntityType } from "@prisma/client";
 
 interface Props {
   score: number;
-  answers: Record<string, boolean>;
+  answers: Record<string, boolean | "unknown">;
   entityType: EntityType;
   onNavigateDocs: () => void;
 }
 
 export default function PDPLResultView({ score, answers, entityType, onNavigateDocs }: Props) {
   const gaps = pdplQuestions
-    .filter(q => !answers[q.id])
+    .filter(q => answers[q.id] === false || answers[q.id] === "unknown")
     .slice(0, 3);
 
   const getStatusLabel = () => {
-    if (score <= 40) return { label: "يحتاج مراجعة", color: "text-red-600", bg: "bg-red-50", message: "وضعك الحالي يتطلب بعض الترتيب والتنظيم." };
-    if (score <= 75) return { label: "متوسط", color: "text-amber-600", bg: "bg-amber-50", message: "وضعك الحالي يحتاج بعض التحسينات." };
-    return { label: "جيد", color: "text-green-600", bg: "bg-green-50", message: "نشاطك في وضع جيد، وهناك خطوات بسيطة لتنظيمه أكثر." };
+    if (score >= 80) return { label: "جيد مبدئيًا", color: "text-green-600", bg: "bg-green-50", message: "جاهزية جيدة مبدئيًا، مع بعض النقاط التي تحتاج توثيق" };
+    if (score >= 50) return { label: "متوسط", color: "text-amber-600", bg: "bg-amber-50", message: "جاهزية متوسطة، توجد فجوات تشغيلية تحتاج تنظيم" };
+    return { label: "تحتاج ترتيب", color: "text-red-600", bg: "bg-red-50", message: "توجد عدة نقاط تحتاج ترتيب قبل الاعتماد على ممارسات البيانات الحالية" };
   };
 
   const status = getStatusLabel();
 
   const plans = [
     {
-      name: "الفحص الأساسي",
+      name: "تشخيص الجاهزية",
       price: "149",
-      desc: "نتائج جاهزيتك الكاملة مع التوصيات",
+      desc: "مناسب إذا كنت تريد معرفة وضعك فقط",
       features: [
         "نتيجة الجاهزية التفصيلية",
         "أهم الفجوات المكتشفة",
-        "توصيات مختصرة قابلة للتطبيق",
+        "ملخص التوصيات",
+        "معاينة محدودة للمستندات",
       ],
       highlight: false,
       badge: null,
+      cta: "احصل على التشخيص فقط"
     },
     {
-      name: "باقة البداية",
+      name: "بدء التطبيق",
       price: "299",
-      desc: "الأنسب لبدء التنظيم الفعلي",
+      desc: "الأفضل لمعظم المتاجر والمنشآت الصغيرة",
       features: [
         "تقرير جاهزية شامل",
-        "خطة عمل تشغيلية لـ 14 يوم",
-        "مسودة سياسة خصوصية قابلة للتعديل",
+        "خطة عمل لـ 14 يوم",
+        "مسودة سياسة الخصوصية",
+        "سجل حصر البيانات",
+        "صياغة نموذج الموافقة",
         "تصدير PDF",
       ],
       highlight: true,
       badge: "الأكثر طلبًا",
+      cta: "ابدأ التنظيم الآن"
     },
     {
-      name: "الباقة الكاملة",
+      name: "حزمة البداية الكاملة",
       price: "499",
-      desc: "لمن يريد تنظيماً شاملاً",
+      desc: "مناسب إذا تريد ملف بداية أوسع",
       features: [
-        "كل ما في باقة البداية",
-        "قوالب إضافية قابلة للتعديل",
-        "قائمة فحص حوادث البيانات",
-        "قائمة مشاركة البيانات مع الأطراف الخارجية",
+        "كل ما في باقة 299",
+        "مخرجات أكثر تفصيلاً",
+        "قوائم فحص إضافية",
+        "حزمة بداية متكاملة",
       ],
       highlight: false,
       badge: null,
+      cta: "جهز الحزمة الكاملة"
     },
   ];
 
@@ -84,7 +91,7 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
       >
         <div className="p-10 md:p-16 text-center border-b border-gray-50">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6 font-bold text-sm bg-primary/5 text-primary">
-            نتيجة تقييم الجاهزية
+            جاهزية الامتثال المبدئية
           </div>
           <div className="relative inline-block mb-8">
              <div className="text-8xl md:text-9xl font-black text-primary">{score}%</div>
@@ -100,7 +107,7 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
           <h2 className="text-2xl font-bold text-gray-900 mb-2">{status.message}</h2>
           <p className="text-gray-500">تم تحليل نشاطك بناءً على متطلبات نظام حماية البيانات السعودي (PDPL).</p>
           <p className="text-xs text-gray-400 mt-4 max-w-lg mx-auto">
-            هذه النتائج هي مخرجات استرشادية لمساعدتك على فهم وضعك وتنظيم خطواتك، ولا تعد استشارة قانونية أو شهادة امتثال.
+            هذه النتائج هي مخرجات استرشادية لمساعدتك على فهم وضعك وتنظيم خطواتك، ولا تعد استشارة قانونية.
           </p>
         </div>
 
@@ -112,52 +119,25 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
           </h3>
           <div className="grid md:grid-cols-3 gap-6">
             {gaps.map((gap, idx) => (
-              <div key={idx} className="bg-white p-6 rounded-3xl border border-red-100 shadow-sm text-right relative overflow-hidden">
+              <div key={idx} className="bg-white p-6 rounded-3xl border border-red-100 shadow-sm text-right relative overflow-hidden flex flex-col h-full">
                 <div className="absolute top-0 right-0 w-1 h-full bg-red-400 opacity-20" />
-                <h4 className="font-bold text-gray-900 mb-2">{gap.category}</h4>
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  {gap.labels[entityType]}
+                <div className="flex items-center justify-end gap-2 mb-2">
+                   <h4 className="font-bold text-gray-900">{gap.category}</h4>
+                   {answers[gap.id] === "unknown" && <HelpCircle size={14} className="text-amber-500" />}
+                </div>
+                <p className="text-xs text-gray-600 leading-relaxed mb-4 flex-1">
+                  {gap.explanation}
                 </p>
+                <div className="pt-4 border-t border-gray-50 text-[10px] font-bold text-primary">
+                   إجراء مقترح: {gap.action}
+                </div>
               </div>
             ))}
           </div>
         </div>
       </motion.div>
 
-      {/* 3. What This Means Section */}
-      <div className="grid md:grid-cols-2 gap-8 mb-12">
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-white p-10 rounded-[32px] border border-gray-100 shadow-sm text-right"
-        >
-          <div className="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center mb-6">
-            <TrendingUp className="text-amber-600" size={24} />
-          </div>
-          <h3 className="text-xl font-bold text-gray-900 mb-4">ماذا يعني هذا لنشاطك؟</h3>
-          <p className="text-gray-600 leading-relaxed">
-            هذه الفجوات قد تؤدي إلى ثغرات في كيفية معالجة البيانات الشخصية داخل نشاطك، مما قد يؤثر على ثقة العملاء والتوافق مع المتطلبات الوطنية.
-          </p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.3 }}
-          className="bg-primary p-10 rounded-[32px] text-white text-right relative overflow-hidden"
-        >
-          <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center mb-6">
-            <ShieldCheck className="text-secondary" size={24} />
-          </div>
-          <h3 className="text-xl font-bold mb-4">الخطوات التالية واضحة</h3>
-          <p className="text-white/80 leading-relaxed">
-            قمنا بتجهيز خطة عمل تشغيلية ومسودات قابلة للتعديل لمساعدتك في تنظيم خطواتك بشكل عملي ومناسب لنوع نشاطك.
-          </p>
-        </motion.div>
-      </div>
-
-      {/* 4. 3-Tier Paywall */}
+      {/* 3. Pricing Logic */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -165,7 +145,7 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
         className="mb-12"
       >
         <h3 className="text-2xl font-black text-gray-900 mb-2 text-center">فعّل مخرجاتك الآن</h3>
-        <p className="text-gray-500 text-center mb-10 font-body">اختر الباقة المناسبة لاحتياجك</p>
+        <p className="text-gray-500 text-center mb-10 font-body text-sm">اختر الباقة المناسبة للبدء في تنظيم نشاطك</p>
 
         <div className="grid md:grid-cols-3 gap-6">
           {plans.map((plan, idx) => (
@@ -186,16 +166,16 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
               )}
 
               <h4 className="text-lg font-black text-gray-900 font-heading mb-1">{plan.name}</h4>
-              <p className="text-xs text-gray-400 font-body mb-4">{plan.desc}</p>
+              <p className="text-[10px] text-gray-400 font-body mb-4 leading-tight">{plan.desc}</p>
               <div className="text-3xl font-black text-primary font-heading mb-6">
                 {plan.price} <span className="text-sm font-bold text-gray-400">ريال</span>
               </div>
 
               <ul className="space-y-3 mb-8 flex-1 font-body">
                 {plan.features.map((f, i) => (
-                  <li key={i} className="flex items-center justify-end gap-2 text-sm text-gray-700">
+                  <li key={i} className="flex items-center justify-end gap-2 text-xs text-gray-700">
                     {f}
-                    <CheckCircle2 size={15} className={plan.highlight ? "text-primary shrink-0" : "text-gray-300 shrink-0"} />
+                    <CheckCircle2 size={13} className={plan.highlight ? "text-primary shrink-0" : "text-gray-300 shrink-0"} />
                   </li>
                 ))}
               </ul>
@@ -209,25 +189,25 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
                     : "bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-100"
                 )}
               >
-                اطلب تفعيل الباقة
+                {plan.cta}
               </button>
             </div>
           ))}
         </div>
 
         {/* Legal Disclaimer */}
-        <p className="text-center text-xs text-gray-400 mt-8 max-w-2xl mx-auto font-body leading-relaxed">
-          المخرجات المقدمة هي أدوات استرشادية لمساعدتك على فهم وضعك وتنظيم خطواتك، ولا تعد استشارة قانونية أو شهادة امتثال.
+        <p className="text-center text-[10px] text-gray-400 mt-8 max-w-2xl mx-auto font-body leading-relaxed">
+          المخرجات المقدمة هي مسودات استرشادية لمساعدتك على فهم وضعك وتنظيم خطواتك، ولا تعد استشارة قانونية أو تقييماً نهائياً.
         </p>
       </motion.div>
 
-      {/* 5. Secondary CTA */}
+      {/* 4. Secondary CTA */}
       <div className="text-center">
         <button 
           onClick={onNavigateDocs}
           className="text-primary font-black transition-all flex items-center justify-center gap-2 mx-auto text-lg hover:gap-4"
         >
-           استعرض مسودة سياسة الخصوصية
+           معاينة مسودة سياسة الخصوصية
            <ArrowRight size={20} className="rotate-180" />
         </button>
       </div>

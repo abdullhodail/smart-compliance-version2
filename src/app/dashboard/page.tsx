@@ -35,11 +35,8 @@ export default async function DashboardPage() {
   console.log(`[DashboardPage] Organization found: ${entityType}, goal: ${primaryGoal}`);
 
   // Track-based Redirection logic
-  if (entityType === "NGO" && primaryGoal === "GOVERNANCE") {
-    console.log("[DashboardPage] Redirecting to /dashboard/governance-lite");
-    redirect("/dashboard/governance-lite");
-  } else {
-    console.log("[DashboardPage] Redirecting to /dashboard/pdpl");
-    redirect("/dashboard/pdpl");
-  }
+  // PDPL is now the main commercial track for all users.
+  // NGOs can access Governance Lite via the sidebar.
+  console.log("[DashboardPage] Redirecting to /dashboard/pdpl (Main Track)");
+  redirect("/dashboard/pdpl");
 }

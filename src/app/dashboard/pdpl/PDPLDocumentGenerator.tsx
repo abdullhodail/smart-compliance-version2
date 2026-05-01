@@ -7,116 +7,186 @@ import {
   ListChecks, 
   Lock, 
   Download, 
-  ArrowRight,
   ChevronRight,
   ShieldCheck,
-  CheckCircle2
+  CheckCircle2,
+  Database,
+  MessageSquare
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { EntityType } from "@prisma/client";
 import { pdplQuestions } from "./content";
 
 interface Props {
-  answers: Record<string, boolean>;
+  answers: Record<string, boolean | "unknown">;
   entityType: EntityType;
+  businessActivity?: string | null;
   onBack: () => void;
 }
 
-export default function PDPLDocumentGenerator({ answers, entityType, onBack }: Props) {
-  const [activeTab, setActiveTab] = useState<"policy" | "action-plan">("policy");
+type Tab = "policy" | "action-plan" | "inventory" | "consent";
+
+export default function PDPLDocumentGenerator({ answers, entityType, businessActivity, onBack }: Props) {
+  const [activeTab, setActiveTab] = useState<Tab>("policy");
 
   const getSectorTerms = () => {
-    switch (entityType) {
-      case "ECOMMERCE": return { users: "العملاء", activities: "عمليات الشراء والتوصيل" };
-      case "NGO": return { users: "المانحين والمستفيدين", activities: "الخدمات الرعوية والبرامج" };
-      default: return { users: "العملاء والموظفين", activities: "الأنظمة الداخلية والخدمات" };
+    if (entityType === "ECOMMERCE") return { users: "العملاء", activities: "عمليات الشراء والتوصيل", data: "بيانات الطلبات" };
+    if (entityType === "NGO") return { users: "المانحين والمستفيدين", activities: "الخدمات الرعوية والبرامج", data: "بيانات المتطوعين" };
+    
+    // SME Personalized
+    switch (businessActivity) {
+      case "HEALTHCARE": return { users: "المرضى", activities: "الخدمات الطبية", data: "الملفات الصحية" };
+      case "CONSTRUCTION": return { users: "الموظفين والعمالة", activities: "عمليات التشغيل والمشاريع", data: "بيانات المقاولين" };
+      case "REAL_ESTATE": return { users: "الملاك والمستأجرين", activities: "الوساطة العقارية", data: "العقود العقارية" };
+      case "EDUCATION": return { users: "المتدربين والطلاب", activities: "التدريب والتعليم", data: "سجلات الحضور" };
+      case "TRADE": return { users: "العملاء", activities: "المبيعات والتجارة", data: "بيانات الطلبات" };
+      case "SERVICES": return { users: "العملاء", activities: "الخدمات الاستشارية", data: "بيانات العقود" };
+      default: return { users: "العملاء والموظفين", activities: "الأنظمة الداخلية", data: "السجلات العامة" };
     }
   };
 
   const terms = getSectorTerms();
-  const gaps = pdplQuestions.filter(q => !answers[q.id]);
+  const gaps = pdplQuestions.filter(q => answers[q.id] === false || answers[q.id] === "unknown");
 
-  const policyContent = [
-    { title: "1. مقدمة", content: `نحن في [اسم المنشأة] نلتزم بحماية خصوصية ${terms.users} وضمان أمان بياناتهم الشخصية وفقاً لنظام حماية البيانات السعودي (PDPL).` },
-    { title: "2. البيانات التي نجمعها", content: `نقوم بجمع البيانات الضرورية فقط لتقديم ${terms.activities}، والتي تشمل الاسم، ومعلومات الاتصال، وأي بيانات فنية أخرى لازمة.` },
-    { title: "3. الغرض من معالجة البيانات", content: "نستخدم البيانات الشخصية لتحسين جودة الخدمة، والتواصل مع أصحاب البيانات، والوفاء بالالتزامات النظامية." },
-    { title: "4. مشاركة البيانات مع أطراف ثالثة", content: "قد نشارك بعض البيانات مع مزودي خدمات موثوقين (مثل شركات التقنية أو التوصيل) لضمان تقديم الخدمة بكفاءة." },
-    { title: "5. حقوق أصحاب البيانات", content: "يحق لك طلب مراجعة بياناتك، تعديلها، أو حذفها في أي وقت عبر التواصل معنا مباشرة." }
-  ];
-
-  const actionSteps = [
-    { title: "تفعيل سياسة الخصوصية", desc: "نشر مسودة السياسة المحدثة في كافة قنوات التواصل مع المستفيدين." },
-    { title: "تنظيم سجلات المعالجة", desc: "إنشاء سجل داخلي يوضح كافة أنواع البيانات التي يتم جمعها والغرض منها." },
-    { title: "تحديث اتفاقيات الأطراف الثالثة", desc: "التأكد من وجود بنود حماية بيانات في العقود مع مزودي الخدمات." },
-    { title: "بروتوكول حماية الوصول", desc: "تفعيل صلاحيات الوصول المقيدة لضمان أن الموظفين المعنيين فقط هم من يصلون للبيانات." },
-    { title: "خطة الاستجابة للحوادث", desc: "تجهيز إجراءات واضحة للتعامل مع أي تسرب محتمل للبيانات وإبلاغ الجهات المعنية." }
-  ];
+  const documents = {
+    policy: {
+      title: "مسودة سياسة الخصوصية",
+      sections: [
+        { title: "1. مقدمة", content: `نحن في [اسم المنشأة] نلتزم بحماية خصوصية ${terms.users} وضمان أمان بياناتهم الشخصية وفقاً لنظام حماية البيانات السعودي (PDPL).` },
+        { title: "2. البيانات التي نجمعها", content: `نقوم بجمع البيانات الضرورية فقط لتقديم ${terms.activities}، والتي تشمل ${terms.data}، ومعلومات الاتصال.` },
+        { title: "3. الغرض من معالجة البيانات", content: `نستخدم البيانات الشخصية لتحسين جودة ${terms.activities}، والوفاء بالالتزامات النظامية.` },
+        { title: "4. حقوق أصحاب البيانات", content: "يحق لك طلب مراجعة بياناتك، تعديلها، أو حذفها عبر القنوات الرسمية الموضحة لدينا." }
+      ]
+    },
+    "action-plan": {
+      title: "خطة عمل معالجة الفجوات (14 يوم)",
+      steps: [
+        { title: "اليوم 1-3: حصر البيانات", desc: `تحديد كافة نقاط جمع ${terms.data} وتوثيق الغرض منها.` },
+        { title: "اليوم 4-7: تحديث السياسات", desc: "نشر مسودة سياسة الخصوصية المحدثة وتفعيل إشعارات الموافقة." },
+        { title: "اليوم 8-10: تنظيم الوصول", desc: "مراجعة صلاحيات الموظفين والتأكد من أن الوصول للبيانات محصور للمخولين فقط." },
+        { title: "اليوم 11-14: تدقيق الأطراف الثالثة", desc: "التواصل مع شركاء التقنية أو التوصيل للتأكد من وجود بنود حماية بيانات." }
+      ]
+    },
+    inventory: {
+      title: "سجل حصر البيانات الشخصية",
+      items: [
+        { type: "بيانات الهوية", purpose: "التحقق من الهوية", storage: "قاعدة البيانات الرئيسية" },
+        { type: "بيانات التواصل", purpose: "التواصل وتقديم الخدمة", storage: "نظام CRM / المتجر" },
+        { type: terms.data, purpose: "إتمام العمليات التشغيلية", storage: "الأنظمة السحابية" },
+        { type: "بيانات تقنية (IP)", purpose: "تحسين تجربة المستخدم", storage: "سجلات الموقع" }
+      ]
+    },
+    consent: {
+      title: "صياغة نماذج الموافقة والإشعار",
+      forms: [
+        { label: "نموذج موافقة تسويقية", text: `أوافق على استلام رسائل حول ${terms.activities} عبر البريد أو الجوال.` },
+        { label: "إشعار ملفات الارتباط", text: "نستخدم ملفات تعريف الارتباط لتحسين تجربتك. باستمرارك في التصفح أنت توافق على ذلك." },
+        { label: "نموذج جمع بيانات جديد", text: `يتم جمع هذه البيانات لغرض ${terms.activities} فقط.` }
+      ]
+    }
+  };
 
   return (
     <div className="max-w-5xl mx-auto py-12 px-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-6">
-        <div className="text-right">
+      <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-6 text-right">
+        <div className="text-right w-full md:w-auto">
           <h2 className="text-3xl font-black text-gray-900 mb-2">منشئ المسودات الذكي</h2>
-          <p className="text-gray-500">وثائق جاهزة للتطبيق تم إعدادها بناءً على تقييمك الأخير.</p>
+          <p className="text-gray-500 text-sm">مخرجات استرشادية بناءً على تقييمك ونوع نشاطك.</p>
         </div>
         <button 
           onClick={onBack}
-          className="flex items-center gap-2 text-gray-500 font-bold hover:text-primary transition-colors"
+          className="flex items-center gap-2 text-gray-500 font-bold hover:text-primary transition-colors flex-row-reverse shrink-0"
         >
+          <ChevronRight size={20} className="rotate-180" />
           العودة للنتائج
-          <ChevronRight size={20} />
         </button>
       </div>
 
       {/* Tabs */}
-      <div className="flex bg-gray-100 p-1.5 rounded-2xl mb-10 max-w-md mx-auto flex-row-reverse">
-        <button
-          onClick={() => setActiveTab("policy")}
-          className={cn(
-            "flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all",
-            activeTab === "policy" ? "bg-white text-primary shadow-sm" : "text-gray-500 hover:text-gray-700"
-          )}
-        >
-          <FileText size={18} />
-          سياسة الخصوصية
-        </button>
-        <button
-          onClick={() => setActiveTab("action-plan")}
-          className={cn(
-            "flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all",
-            activeTab === "action-plan" ? "bg-white text-primary shadow-sm" : "text-gray-500 hover:text-gray-700"
-          )}
-        >
-          <ListChecks size={18} />
-          خطة العمل
-        </button>
+      <div className="grid grid-cols-2 md:grid-cols-4 bg-gray-100 p-1.5 rounded-2xl mb-10 gap-2">
+        {(Object.keys(documents) as Tab[]).map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={cn(
+              "flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all text-sm",
+              activeTab === tab ? "bg-white text-primary shadow-sm" : "text-gray-500 hover:text-gray-700"
+            )}
+          >
+            {tab === "policy" && <FileText size={16} />}
+            {tab === "action-plan" && <ListChecks size={16} />}
+            {tab === "inventory" && <Database size={16} />}
+            {tab === "consent" && <MessageSquare size={16} />}
+            {tab === "policy" && "سياسة الخصوصية"}
+            {tab === "action-plan" && "خطة العمل"}
+            {tab === "inventory" && "سجل البيانات"}
+            {tab === "consent" && "نماذج الموافقة"}
+          </button>
+        ))}
       </div>
 
       {/* Document Preview Area */}
       <div className="bg-white rounded-[40px] border border-gray-200 shadow-2xl overflow-hidden relative min-h-[600px]">
         <div className="p-10 md:p-16">
-          {activeTab === "policy" ? (
+          <h3 className="text-2xl font-black text-gray-900 mb-10 text-right">{documents[activeTab].title}</h3>
+          
+          {activeTab === "policy" && (
             <div className="space-y-10 text-right">
-              {policyContent.map((section, idx) => (
+              {documents.policy.sections.map((section, idx) => (
                 <div key={idx} className={cn(idx > 1 && "blur-[3px] opacity-30 select-none")}>
-                  <h4 className="text-xl font-bold text-gray-900 mb-3">{section.title}</h4>
-                  <p className="text-gray-600 leading-relaxed text-lg">{section.content}</p>
+                  <h4 className="text-lg font-bold text-gray-900 mb-3">{section.title}</h4>
+                  <p className="text-gray-600 leading-relaxed">{section.content}</p>
                 </div>
               ))}
             </div>
-          ) : (
+          )}
+
+          {activeTab === "action-plan" && (
             <div className="space-y-8 text-right">
-              <h3 className="text-2xl font-black text-primary mb-8">خطة معالجة الفجوات التنظيمية</h3>
-              {actionSteps.map((step, idx) => (
+              {documents["action-plan"].steps.map((step, idx) => (
                 <div key={idx} className={cn("flex items-start gap-4 flex-row-reverse", idx > 1 && "blur-[3px] opacity-30 select-none")}>
                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 font-bold text-primary">
                      {idx + 1}
                    </div>
                    <div>
                      <h4 className="text-lg font-bold text-gray-900 mb-1">{step.title}</h4>
-                     <p className="text-gray-600">{step.desc}</p>
+                     <p className="text-gray-600 text-sm">{step.desc}</p>
                    </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {activeTab === "inventory" && (
+            <div className="overflow-hidden border border-gray-100 rounded-2xl text-right" dir="rtl">
+              <table className="w-full text-sm">
+                <thead className="bg-gray-50 text-gray-500 font-bold">
+                  <tr>
+                    <th className="p-4 text-right">نوع البيانات</th>
+                    <th className="p-4 text-right">الغرض</th>
+                    <th className="p-4 text-right">مكان الحفظ</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {documents.inventory.items.map((item, idx) => (
+                    <tr key={idx} className={cn(idx > 1 && "blur-[2px] opacity-30 select-none")}>
+                      <td className="p-4 font-bold text-gray-900">{item.type}</td>
+                      <td className="p-4 text-gray-600">{item.purpose}</td>
+                      <td className="p-4 text-gray-600">{item.storage}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {activeTab === "consent" && (
+            <div className="space-y-6 text-right">
+              {documents.consent.forms.map((form, idx) => (
+                <div key={idx} className={cn("p-6 bg-gray-50 rounded-2xl border border-gray-100", idx > 1 && "blur-[3px] opacity-30 select-none")}>
+                   <h4 className="text-sm font-bold text-primary mb-3">{form.label}</h4>
+                   <p className="text-gray-700 font-mono text-sm">{form.text}</p>
                 </div>
               ))}
             </div>
@@ -130,8 +200,8 @@ export default function PDPLDocumentGenerator({ answers, entityType, onBack }: P
                 <Lock className="text-white" size={28} />
               </div>
               <h4 className="text-2xl font-black text-gray-900 mb-2">احصل على الوثيقة كاملة</h4>
-              <p className="text-gray-500 mb-8 font-medium">
-                هذا استعراض بسيط. النسخة الكاملة تتضمن مسودة إرشادية متكاملة وجاهزة للنشر والطباعة.
+              <p className="text-gray-500 mb-8 font-medium text-sm">
+                هذه المخرجات هي مسودات استرشادية قابلة للتعديل. النسخة الكاملة تتضمن صياغة متكاملة وجاهزة للنشر والطباعة.
               </p>
               
               <button 
@@ -142,16 +212,19 @@ export default function PDPLDocumentGenerator({ answers, entityType, onBack }: P
                 <Download size={24} />
               </button>
               
-              <div className="mt-6 flex items-center justify-center gap-6 text-xs text-gray-400 font-bold">
+              <div className="mt-6 flex items-center justify-center gap-6 text-[10px] text-gray-400 font-bold">
                  <div className="flex items-center gap-1">
                    <ShieldCheck size={14} className="text-green-500" />
                    مسودة إرشادية
                  </div>
                  <div className="flex items-center gap-1">
                    <CheckCircle2 size={14} className="text-green-500" />
-                   تحميل بصيغة PDF
+                   قالب قابل للتعديل
                  </div>
               </div>
+              <p className="mt-6 text-[9px] text-gray-300 leading-relaxed">
+                لا تعتبر هذه الوثائق استشارة قانونية مهنية. يجب مراجعتها وتكييفها حسب طبيعة المنشأة وعملياتها الفعلية.
+              </p>
            </div>
         </div>
       </div>

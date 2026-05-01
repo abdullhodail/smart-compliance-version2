@@ -16,6 +16,7 @@ export async function submitOnboarding(formData: FormData) {
   const name = (formData.get("organizationName") as string) || "جهة جديدة";
   const entityType = formData.get("entityType") as EntityType;
   const primaryGoal = formData.get("primaryGoal") as string;
+  const businessActivity = formData.get("businessActivity") as string;
 
   let targetPath = "/dashboard";
   try {
@@ -25,6 +26,7 @@ export async function submitOnboarding(formData: FormData) {
         name,
         entityType,
         primaryGoal,
+        businessActivity: businessActivity || null,
         status: "TRIAL",
       },
     });

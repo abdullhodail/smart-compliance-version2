@@ -30,13 +30,14 @@ export async function getPDPLAssessment() {
     assessment,
     organizationId: dbUser.organization.id,
     entityType: dbUser.organization.entityType,
+    businessActivity: dbUser.organization.businessActivity,
   };
 }
 
 export async function updatePDPLProgress(
   organizationId: string, 
   entityType: EntityType,
-  answers: Record<string, boolean>
+  answers: Record<string, boolean | "unknown">
 ) {
   let totalWeight = 0;
   let earnedWeight = 0;
@@ -46,6 +47,7 @@ export async function updatePDPLProgress(
     if (answers[question.id] === true) {
       earnedWeight += question.weight;
     }
+    // "unknown" and false earn 0 weight
   });
 
   const score = Math.round((earnedWeight / totalWeight) * 100);
@@ -60,14 +62,14 @@ export async function updatePDPLProgress(
     update: {
       answersJson: answers as any,
       score,
-      status: score === 100 ? "COMPLETED" : "IN_PROGRESS",
+      status: "COMPLETED", // Mark as completed once the wizard is done
     },
     create: {
       organizationId,
       track: "PDPL",
       answersJson: answers as any,
       score,
-      status: "IN_PROGRESS",
+      status: "COMPLETED",
     },
   });
 

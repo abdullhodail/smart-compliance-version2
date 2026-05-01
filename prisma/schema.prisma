@@ -37,6 +37,7 @@ model Organization {
   users          User[]
   assessments    AssessmentResult[]
   subscriptions  Subscription[]
+  businessActivity String?
   createdAt      DateTime           @default(now())
   updatedAt      DateTime           @updatedAt
 }

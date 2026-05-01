@@ -16,10 +16,16 @@ interface Props {
 
 export default function ClientOnboarding({ initialData }: Props) {
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    organizationName: string;
+    entityType: string;
+    primaryGoal: string;
+    businessActivity?: string;
+  }>({
     organizationName: initialData?.organizationName || "",
     entityType: initialData?.entityType || "",
     primaryGoal: initialData?.primaryGoal || "",
+    businessActivity: "",
   });
 
   const nextStep = () => setStep((s) => s + 1);
@@ -37,11 +43,22 @@ export default function ClientOnboarding({ initialData }: Props) {
     { id: "FULL", label: "تقييم شامل", description: "حوكمة وامتثال متكامل لكافة المسارات", icon: Target },
   ];
 
+  const smeActivities = [
+    { id: "SERVICES", label: "خدمات / استشارات" },
+    { id: "CONSTRUCTION", label: "مقاولات / تشغيل / صيانة" },
+    { id: "REAL_ESTATE", label: "عقار / وساطة عقارية" },
+    { id: "EDUCATION", label: "تدريب / تعليم" },
+    { id: "HEALTHCARE", label: "رعاية صحية / عيادة" },
+    { id: "TRADE", label: "تجارة / مبيعات" },
+    { id: "OTHER", label: "أخرى / SME عام" },
+  ];
+
   return (
     <form className="p-8 md:p-12 text-right" action={submitOnboarding}>
       {/* Hidden inputs to capture state in FormData */}
       <input type="hidden" name="entityType" value={formData.entityType} />
       <input type="hidden" name="primaryGoal" value={formData.primaryGoal} />
+      <input type="hidden" name="businessActivity" value={formData.businessActivity || ""} />
 
       <AnimatePresence mode="wait">
         {step === 1 && (
@@ -115,9 +132,43 @@ export default function ClientOnboarding({ initialData }: Props) {
           </motion.div>
         )}
 
-        {step === 3 && (
+        {step === 3 && formData.entityType === "SME" && (
           <motion.div
-            key="step3"
+            key="step-sme"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="space-y-8"
+          >
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">ما نوع نشاط المنشأة الأقرب؟</h2>
+              <p className="text-gray-500">سيساعدنا هذا في تخصيص لغة التقييم والوثائق.</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {smeActivities.map((activity) => (
+                <button
+                  key={activity.id}
+                  type="button"
+                  onClick={() => {
+                    setFormData({ ...formData, businessActivity: activity.id });
+                    nextStep();
+                  }}
+                  className={cn(
+                    "flex items-center justify-center p-4 rounded-2xl border-2 transition-all text-center font-bold",
+                    formData.businessActivity === activity.id ? "border-primary bg-primary/5 text-primary" : "border-gray-100 bg-white text-gray-600"
+                  )}
+                >
+                  {activity.label}
+                </button>
+              ))}
+            </div>
+            <button type="button" onClick={prevStep} className="text-gray-400 font-medium">الرجوع</button>
+          </motion.div>
+        )}
+
+        {((step === 3 && formData.entityType !== "SME") || step === 4) && (
+          <motion.div
+            key="step-final"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}

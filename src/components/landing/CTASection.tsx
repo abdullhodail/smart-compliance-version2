@@ -28,7 +28,7 @@ export default function CTASection() {
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
             <Link
-              href="/dashboard/pdpl"
+              href="/register?next=/dashboard/pdpl"
               className="w-full sm:w-auto px-12 py-5 bg-secondary text-white font-bold rounded-2xl shadow-2xl shadow-black/10 hover:bg-secondary-light hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-3 text-lg"
             >
               ابدأ التقييم المجاني

@@ -201,7 +201,7 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
               </ul>
 
               <button
-                onClick={onNavigateDocs}
+                onClick={() => alert("سيتم تفعيل الدفع الإلكتروني قريبًا. للتفعيل التجريبي تواصل معنا.")}
                 className={cn(
                   "w-full py-3 rounded-2xl font-black text-sm transition-all",
                   plan.highlight
@@ -209,7 +209,7 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
                     : "bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-100"
                 )}
               >
-                {plan.highlight ? "ابدأ بهذه الباقة" : "اختر الباقة"}
+                اطلب تفعيل الباقة
               </button>
             </div>
           ))}

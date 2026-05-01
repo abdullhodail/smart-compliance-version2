@@ -60,7 +60,7 @@ export default function PricingSection() {
           </ul>
 
           <Link
-            href="/dashboard/pdpl"
+            href="/register?next=/dashboard/pdpl"
             className="w-full py-4 bg-primary text-white font-black rounded-2xl hover:bg-primary-light transition-all flex items-center justify-center gap-2 text-lg shadow-lg shadow-primary/20"
           >
             ابدأ التقييم الآن

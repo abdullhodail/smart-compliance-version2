@@ -57,7 +57,7 @@ export default function PDPLDocumentGenerator({ answers, entityType, onBack }: P
       {/* Header */}
       <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-6">
         <div className="text-right">
-          <h2 className="text-3xl font-black text-gray-900 mb-2">منشئ الوثائق الذكي</h2>
+          <h2 className="text-3xl font-black text-gray-900 mb-2">منشئ المسودات الذكي</h2>
           <p className="text-gray-500">وثائق جاهزة للتطبيق تم إعدادها بناءً على تقييمك الأخير.</p>
         </div>
         <button 
@@ -131,18 +131,21 @@ export default function PDPLDocumentGenerator({ answers, entityType, onBack }: P
               </div>
               <h4 className="text-2xl font-black text-gray-900 mb-2">احصل على الوثيقة كاملة</h4>
               <p className="text-gray-500 mb-8 font-medium">
-                هذا استعراض بسيط. النسخة الكاملة تتضمن صياغة قانونية متكاملة وجاهزة للنشر والطباعة.
+                هذا استعراض بسيط. النسخة الكاملة تتضمن مسودة إرشادية متكاملة وجاهزة للنشر والطباعة.
               </p>
               
-              <button className="w-full py-5 bg-primary text-white font-black rounded-2xl hover:bg-primary-light transition-all flex items-center justify-center gap-3 text-lg shadow-xl shadow-primary/20">
-                فتح الوصول الكامل
+              <button 
+                onClick={() => alert("سيتم تفعيل الدفع الإلكتروني قريبًا. للتفعيل التجريبي تواصل معنا.")}
+                className="w-full py-5 bg-primary text-white font-black rounded-2xl hover:bg-primary-light transition-all flex items-center justify-center gap-3 text-lg shadow-xl shadow-primary/20 pointer-events-auto"
+              >
+                اطلب تفعيل الباقة
                 <Download size={24} />
               </button>
               
               <div className="mt-6 flex items-center justify-center gap-6 text-xs text-gray-400 font-bold">
                  <div className="flex items-center gap-1">
                    <ShieldCheck size={14} className="text-green-500" />
-                   صياغة سعودية معتمدة
+                   مسودة إرشادية
                  </div>
                  <div className="flex items-center gap-1">
                    <CheckCircle2 size={14} className="text-green-500" />

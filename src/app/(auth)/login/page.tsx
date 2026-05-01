@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { login } from "../actions";
 import QuickLogin from "./QuickLogin";
+import LoginForm from "./LoginForm";
 
 export default async function LoginPage({
   searchParams,
@@ -8,6 +8,7 @@ export default async function LoginPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const { error } = await searchParams;
+
   return (
     <div className="space-y-8">
       <div className="text-right">
@@ -15,54 +16,7 @@ export default async function LoginPage({
         <p className="text-gray-500">أهلاً بك مجدداً في منصة الامتثال الذكي.</p>
       </div>
 
-      <form className="space-y-6">
-        {error && (
-          <div className="p-4 bg-red-50 border-2 border-red-200 rounded-2xl text-right">
-            <p className="text-red-700 font-bold text-sm mb-1">تعذّر تسجيل الدخول</p>
-            <p className="text-red-600 text-xs leading-relaxed">{decodeURIComponent(error)}</p>
-          </div>
-        )}
-
-        <div className="space-y-2 text-right">
-          <label htmlFor="email" className="text-sm font-bold text-gray-700">
-            البريد الإلكتروني
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-right"
-            placeholder="example@domain.com"
-          />
-        </div>
-
-        <div className="space-y-2 text-right">
-          <div className="flex items-center justify-between">
-            <Link href="#" className="text-xs text-primary font-medium hover:underline">
-              نسيت كلمة المرور؟
-            </Link>
-            <label htmlFor="password" className="text-sm font-bold text-gray-700">
-              كلمة المرور
-            </label>
-          </div>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            required
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-right"
-            placeholder="••••••••"
-          />
-        </div>
-
-        <button
-          formAction={login}
-          className="w-full py-4 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:bg-primary-light transition-all active:scale-[0.98]"
-        >
-          تسجيل الدخول
-        </button>
-      </form>
+      <LoginForm error={error} />
 
       <p className="text-center text-sm text-gray-500">
         ليس لديك حساب؟{" "}

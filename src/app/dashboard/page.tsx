@@ -9,9 +9,14 @@ export default async function DashboardPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
+  console.log("[DashboardPage] User session check:", user ? `Authenticated (${user.id})` : "Not Authenticated");
+
   if (!user) {
+    console.log("[DashboardPage] Redirecting to /login");
     redirect("/login");
   }
+
+  console.log("[DashboardPage] Fetching dbUser from Prisma...");
 
   // Fetch the user's organization from our DB (Auto-sync if missing)
   const dbUser = await prisma.user.upsert({
@@ -22,15 +27,19 @@ export default async function DashboardPage() {
   });
 
   if (!dbUser.organization) {
+    console.log("[DashboardPage] No organization found, redirecting to /onboarding");
     redirect("/onboarding");
   }
 
   const { entityType, primaryGoal } = dbUser.organization;
+  console.log(`[DashboardPage] Organization found: ${entityType}, goal: ${primaryGoal}`);
 
   // Track-based Redirection logic
   if (entityType === "NGO" && primaryGoal === "GOVERNANCE") {
+    console.log("[DashboardPage] Redirecting to /dashboard/governance-lite");
     redirect("/dashboard/governance-lite");
   } else {
+    console.log("[DashboardPage] Redirecting to /dashboard/pdpl");
     redirect("/dashboard/pdpl");
   }
 }

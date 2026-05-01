@@ -14,9 +14,14 @@ export default async function DashboardLayout({
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
+  console.log("[DashboardLayout] User session check:", user ? `Authenticated (${user.id})` : "Not Authenticated");
+
   if (!user) {
+    console.log("[DashboardLayout] Redirecting to /login");
     redirect("/login");
   }
+
+  console.log("[DashboardLayout] Fetching dbUser from Prisma...");
 
   const dbUser = await prisma.user.upsert({
     where: { id: user.id },
@@ -29,8 +34,11 @@ export default async function DashboardLayout({
   });
 
   if (!dbUser.organizationId) {
+    console.log("[DashboardLayout] No organizationId found, redirecting to /onboarding");
     redirect("/onboarding");
   }
+
+  console.log("[DashboardLayout] organizationId exists, rendering children");
 
   const isNGO = dbUser?.organization?.entityType === "NGO";
 

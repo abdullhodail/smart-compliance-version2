@@ -25,7 +25,7 @@ export default function Hero() {
               
               <div className="flex flex-wrap gap-4 justify-end">
                 <Link
-                  href="/dashboard/pdpl"
+                  href="/register?next=/dashboard/pdpl"
                   className="px-8 py-4 bg-primary text-white font-black rounded-2xl hover:bg-primary-light transition-all flex items-center gap-2 group text-lg shadow-xl shadow-primary/20"
                 >
                   ابدأ التقييم الآن

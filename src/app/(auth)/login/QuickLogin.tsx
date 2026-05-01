@@ -30,7 +30,7 @@ export default function QuickLogin() {
         ))}
       </div>
       <p className="mt-4 text-[10px] text-gray-400 text-center leading-relaxed">
-        * ملاحظة للمطور: يرجى التأكد من تعطيل "تأكيد البريد" في Supabase أو إنشاء هذه الحسابات يدوياً بكلمة مرور test123456.
+        * كلمة المرور لجميع حسابات التجربة: <span className="font-bold text-gray-500">12345</span>
       </p>
     </div>
   );

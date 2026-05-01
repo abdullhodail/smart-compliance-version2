@@ -17,8 +17,9 @@ export default async function LoginPage({
 
       <form className="space-y-6">
         {error && (
-          <div className="p-4 bg-red-50 border border-red-100 rounded-xl text-red-600 text-sm text-right">
-            {error}
+          <div className="p-4 bg-red-50 border-2 border-red-200 rounded-2xl text-right">
+            <p className="text-red-700 font-bold text-sm mb-1">تعذّر تسجيل الدخول</p>
+            <p className="text-red-600 text-xs leading-relaxed">{decodeURIComponent(error)}</p>
           </div>
         )}
 

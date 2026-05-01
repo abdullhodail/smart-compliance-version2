@@ -4,13 +4,10 @@ import { motion } from "framer-motion";
 import { 
   CheckCircle2, 
   AlertCircle, 
-  Lock, 
-  FileText, 
-  Download, 
   ArrowRight,
   ShieldCheck,
   TrendingUp,
-  FileCheck
+  Star
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { pdplQuestions } from "./content";
@@ -24,18 +21,58 @@ interface Props {
 }
 
 export default function PDPLResultView({ score, answers, entityType, onNavigateDocs }: Props) {
-  // Identify top 3 gaps (questions answered 'false')
   const gaps = pdplQuestions
     .filter(q => !answers[q.id])
     .slice(0, 3);
 
   const getStatusLabel = () => {
-    if (score <= 40) return { label: "منخفض", color: "text-red-600", bg: "bg-red-50", message: "وضعك الحالي يتطلب اهتماماً فورياً." };
+    if (score <= 40) return { label: "يحتاج مراجعة", color: "text-red-600", bg: "bg-red-50", message: "وضعك الحالي يتطلب بعض الترتيب والتنظيم." };
     if (score <= 75) return { label: "متوسط", color: "text-amber-600", bg: "bg-amber-50", message: "وضعك الحالي يحتاج بعض التحسينات." };
-    return { label: "جيد", color: "text-green-600", bg: "bg-green-50", message: "نشاطك في وضع جيد، ولكن هناك تفاصيل للامتثال الكامل." };
+    return { label: "جيد", color: "text-green-600", bg: "bg-green-50", message: "نشاطك في وضع جيد، وهناك خطوات بسيطة لتنظيمه أكثر." };
   };
 
   const status = getStatusLabel();
+
+  const plans = [
+    {
+      name: "الفحص الأساسي",
+      price: "149",
+      desc: "نتائج جاهزيتك الكاملة مع التوصيات",
+      features: [
+        "نتيجة الجاهزية التفصيلية",
+        "أهم الفجوات المكتشفة",
+        "توصيات مختصرة قابلة للتطبيق",
+      ],
+      highlight: false,
+      badge: null,
+    },
+    {
+      name: "باقة البداية",
+      price: "299",
+      desc: "الأنسب لبدء التنظيم الفعلي",
+      features: [
+        "تقرير جاهزية شامل",
+        "خطة عمل تشغيلية لـ 14 يوم",
+        "مسودة سياسة خصوصية قابلة للتعديل",
+        "تصدير PDF",
+      ],
+      highlight: true,
+      badge: "الأكثر طلبًا",
+    },
+    {
+      name: "الباقة الكاملة",
+      price: "499",
+      desc: "لمن يريد تنظيماً شاملاً",
+      features: [
+        "كل ما في باقة البداية",
+        "قوالب إضافية قابلة للتعديل",
+        "قائمة فحص حوادث البيانات",
+        "قائمة مشاركة البيانات مع الأطراف الخارجية",
+      ],
+      highlight: false,
+      badge: null,
+    },
+  ];
 
   return (
     <div className="max-w-4xl mx-auto py-12 px-6">
@@ -62,6 +99,9 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">{status.message}</h2>
           <p className="text-gray-500">تم تحليل نشاطك بناءً على متطلبات نظام حماية البيانات السعودي (PDPL).</p>
+          <p className="text-xs text-gray-400 mt-4 max-w-lg mx-auto">
+            هذه النتائج هي مخرجات استرشادية لمساعدتك على فهم وضعك وتنظيم خطواتك، ولا تعد استشارة قانونية أو شهادة امتثال.
+          </p>
         </div>
 
         {/* 2. Top 3 Gaps Section */}
@@ -72,7 +112,7 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
           </h3>
           <div className="grid md:grid-cols-3 gap-6">
             {gaps.map((gap, idx) => (
-              <div key={idx} className="bg-white p-6 rounded-3xl border border-red-100 shadow-sm text-right relative overflow-hidden group">
+              <div key={idx} className="bg-white p-6 rounded-3xl border border-red-100 shadow-sm text-right relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-1 h-full bg-red-400 opacity-20" />
                 <h4 className="font-bold text-gray-900 mb-2">{gap.category}</h4>
                 <p className="text-sm text-gray-600 leading-relaxed">
@@ -97,7 +137,7 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
           </div>
           <h3 className="text-xl font-bold text-gray-900 mb-4">ماذا يعني هذا لنشاطك؟</h3>
           <p className="text-gray-600 leading-relaxed">
-            هذه الفجوات قد تؤدي إلى فقدان ثقة العملاء أو وجود ثغرات تنظيمية في كيفية معالجة البيانات الشخصية داخل نشاطك، مما قد يؤثر على استدامة العمل وتوافقه مع المتطلبات الوطنية.
+            هذه الفجوات قد تؤدي إلى ثغرات في كيفية معالجة البيانات الشخصية داخل نشاطك، مما قد يؤثر على ثقة العملاء والتوافق مع المتطلبات الوطنية.
           </p>
         </motion.div>
 
@@ -110,98 +150,84 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
           <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center mb-6">
             <ShieldCheck className="text-secondary" size={24} />
           </div>
-          <h3 className="text-xl font-bold mb-4">الحل بسيط وواضح</h3>
+          <h3 className="text-xl font-bold mb-4">الخطوات التالية واضحة</h3>
           <p className="text-white/80 leading-relaxed">
-            قمنا بتجهيز خطة عمل مخصصة ونماذج قانونية جاهزة لسد هذه الفجوات بخطوات عملية واضحة، مصممة خصيصاً لنوع نشاطك الحالي.
+            قمنا بتجهيز خطة عمل تشغيلية ومسودات قابلة للتعديل لمساعدتك في تنظيم خطواتك بشكل عملي ومناسب لنوع نشاطك.
           </p>
         </motion.div>
       </div>
 
-      {/* 5. Paywall Integration & Previews */}
+      {/* 4. 3-Tier Paywall */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="bg-white rounded-[40px] border border-gray-200 shadow-2xl overflow-hidden relative"
+        className="mb-12"
       >
-        <div className="p-10 md:p-12">
-          <h3 className="text-2xl font-black text-gray-900 mb-8 text-right">محتويات خطة الامتثال الكاملة</h3>
-          
-          <div className="grid md:grid-cols-2 gap-6 opacity-40 blur-[1px] pointer-events-none select-none">
-             {[
-               { title: "سياسة الخصوصية للموقع", icon: FileText },
-               { title: "خطة معالجة البيانات", icon: FileCheck },
-               { title: "تقرير تحليل الفجوات الشامل", icon: TrendingUp },
-               { title: "اتفاقية معالجة بيانات (DPA)", icon: FileText },
-             ].map((item, i) => (
-               <div key={i} className="flex items-center gap-4 p-6 border border-gray-100 rounded-2xl bg-gray-50 flex-row-reverse">
-                  <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                    <item.icon className="text-primary" size={24} />
-                  </div>
-                  <span className="font-bold text-gray-800 text-right">{item.title}</span>
-               </div>
-             ))}
-          </div>
+        <h3 className="text-2xl font-black text-gray-900 mb-2 text-center">فعّل مخرجاتك الآن</h3>
+        <p className="text-gray-500 text-center mb-10 font-body">اختر الباقة المناسبة لاحتياجك</p>
 
-          {/* Paywall Overlay */}
-          <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] flex items-center justify-center p-6">
-             <div className="max-w-md w-full bg-white p-10 rounded-[40px] shadow-2xl border border-gray-100 text-center">
-                <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-                  <Lock className="text-white" size={28} />
+        <div className="grid md:grid-cols-3 gap-6">
+          {plans.map((plan, idx) => (
+            <div
+              key={idx}
+              className={cn(
+                "relative p-8 rounded-[32px] border flex flex-col text-right transition-all",
+                plan.highlight
+                  ? "border-primary shadow-2xl shadow-primary/10 ring-4 ring-primary/5 bg-white"
+                  : "border-gray-100 bg-white shadow-sm hover:shadow-md"
+              )}
+            >
+              {plan.badge && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-secondary text-white font-black text-xs rounded-full shadow-lg flex items-center gap-1">
+                  <Star size={10} />
+                  {plan.badge}
                 </div>
-                <h4 className="text-2xl font-black text-gray-900 mb-2">افتح تقريرك الكامل الآن</h4>
-                <p className="text-gray-500 mb-8 font-medium">احصل على كافة النماذج والوثائق المطلوبة فوراً.</p>
-                
-                {/* 7. Pricing Display */}
-                <div className="bg-gray-50 rounded-3xl p-6 mb-8 text-center relative overflow-hidden">
-                   <div className="absolute top-0 right-0 px-3 py-1 bg-secondary text-white text-[10px] font-black rounded-bl-xl">
-                      عرض إطلاق محدود
-                   </div>
-                   <p className="text-sm font-bold text-gray-400 mb-1">باقة الوصول المبكر (عرض خاص)</p>
-                   <div className="text-4xl font-black text-primary">499 ريال</div>
-                   <p className="text-[11px] text-amber-600 font-bold mt-1">متاح لعدد محدود من الجهات خلال المرحلة التجريبية</p>
-                   <ul className="mt-4 space-y-2 text-sm text-gray-600 font-medium">
-                      <li className="flex items-center justify-center gap-2">
-                        <span>تقرير الجاهزية الشامل</span>
-                        <CheckCircle2 size={14} className="text-green-500" />
-                      </li>
-                      <li className="flex items-center justify-center gap-2">
-                        <span>سياسة الخصوصية جاهزة</span>
-                        <CheckCircle2 size={14} className="text-green-500" />
-                      </li>
-                      <li className="flex items-center justify-center gap-2">
-                        <span>خطة عمل منظمة</span>
-                        <CheckCircle2 size={14} className="text-green-500" />
-                      </li>
-                   </ul>
-                </div>
+              )}
 
-                <button 
-                  onClick={onNavigateDocs}
-                  className="w-full py-5 bg-primary text-white font-black rounded-2xl hover:bg-primary-light transition-all flex items-center justify-center gap-3 text-lg mb-4"
-                >
-                  احصل على الخطة الكاملة
-                  <Download size={24} />
-                </button>
-                <div className="flex items-center justify-center gap-2 text-amber-600 text-xs font-bold mb-4">
-                  <AlertCircle size={14} />
-                  <span>متاح حالياً لفترة محدودة</span>
-                </div>
-                <p className="text-xs text-gray-400 font-bold">
-                   "أغلب الجهات تبدأ من نفس هذه المرحلة، وإصلاح هذه النقاط بسيط عند وضوح الخطوات."
-                </p>
-             </div>
-          </div>
+              <h4 className="text-lg font-black text-gray-900 font-heading mb-1">{plan.name}</h4>
+              <p className="text-xs text-gray-400 font-body mb-4">{plan.desc}</p>
+              <div className="text-3xl font-black text-primary font-heading mb-6">
+                {plan.price} <span className="text-sm font-bold text-gray-400">ريال</span>
+              </div>
+
+              <ul className="space-y-3 mb-8 flex-1 font-body">
+                {plan.features.map((f, i) => (
+                  <li key={i} className="flex items-center justify-end gap-2 text-sm text-gray-700">
+                    {f}
+                    <CheckCircle2 size={15} className={plan.highlight ? "text-primary shrink-0" : "text-gray-300 shrink-0"} />
+                  </li>
+                ))}
+              </ul>
+
+              <button
+                onClick={onNavigateDocs}
+                className={cn(
+                  "w-full py-3 rounded-2xl font-black text-sm transition-all",
+                  plan.highlight
+                    ? "bg-primary text-white hover:bg-primary-light shadow-lg shadow-primary/20"
+                    : "bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-100"
+                )}
+              >
+                {plan.highlight ? "ابدأ بهذه الباقة" : "اختر الباقة"}
+              </button>
+            </div>
+          ))}
         </div>
+
+        {/* Legal Disclaimer */}
+        <p className="text-center text-xs text-gray-400 mt-8 max-w-2xl mx-auto font-body leading-relaxed">
+          المخرجات المقدمة هي أدوات استرشادية لمساعدتك على فهم وضعك وتنظيم خطواتك، ولا تعد استشارة قانونية أو شهادة امتثال.
+        </p>
       </motion.div>
 
-      {/* 8. Secondary CTA & Reinforcement */}
-      <div className="mt-12 text-center">
+      {/* 5. Secondary CTA */}
+      <div className="text-center">
         <button 
           onClick={onNavigateDocs}
-          className="text-primary font-black hover:gap-4 transition-all flex items-center justify-center gap-2 mx-auto text-lg"
+          className="text-primary font-black transition-all flex items-center justify-center gap-2 mx-auto text-lg hover:gap-4"
         >
-           توليد سياسة الخصوصية فقط
+           استعرض مسودة سياسة الخصوصية
            <ArrowRight size={20} className="rotate-180" />
         </button>
       </div>

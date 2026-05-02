@@ -38,9 +38,8 @@ export default function ClientOnboarding({ initialData }: Props) {
   ];
 
   const goals = [
-    { id: "GOVERNANCE", label: "الحوكمة", description: "تقييم الجاهزية وتحسين ممارسات الحوكمة", icon: LayoutDashboard },
-    { id: "PDPL", label: "حماية البيانات الشخصية", description: "الامتثال لنظام حماية البيانات الشخصية", icon: ShieldCheck },
-    { id: "FULL", label: "تقييم شامل", description: "حوكمة وامتثال متكامل لكافة المسارات", icon: Target },
+    { id: "GOVERNANCE", label: "مسار الحوكمة المبسطة للجمعيات", description: "تقييم الجاهزية وتحسين ممارسات الحوكمة", icon: LayoutDashboard },
+    { id: "PDPL", label: "حماية البيانات الشخصية PDPL", description: "الامتثال لنظام حماية البيانات الشخصية", icon: ShieldCheck },
   ];
 
   const smeActivities = [
@@ -53,9 +52,26 @@ export default function ClientOnboarding({ initialData }: Props) {
     { id: "OTHER", label: "أخرى / SME عام" },
   ];
 
+  const handleEntitySelection = (typeId: string) => {
+    setFormData({ ...formData, entityType: typeId });
+    if (typeId === "ECOMMERCE") {
+      // Ecommerce goes straight to PDPL
+      setFormData(prev => ({ ...prev, entityType: typeId, primaryGoal: "PDPL" }));
+      nextStep();
+    } else {
+      nextStep();
+    }
+  };
+
+  const handleSMEActivitySelection = (activityId: string) => {
+    setFormData({ ...formData, businessActivity: activityId, primaryGoal: "PDPL" });
+    nextStep();
+  };
+
   return (
     <form className="p-8 md:p-12 text-right" action={submitOnboarding}>
       {/* Hidden inputs to capture state in FormData */}
+      <input type="hidden" name="organizationName" value={formData.organizationName} />
       <input type="hidden" name="entityType" value={formData.entityType} />
       <input type="hidden" name="primaryGoal" value={formData.primaryGoal} />
       <input type="hidden" name="businessActivity" value={formData.businessActivity || ""} />
@@ -111,10 +127,7 @@ export default function ClientOnboarding({ initialData }: Props) {
                 <button
                   key={type.id}
                   type="button"
-                  onClick={() => {
-                    setFormData({ ...formData, entityType: type.id });
-                    nextStep();
-                  }}
+                  onClick={() => handleEntitySelection(type.id)}
                   className={cn(
                     "flex items-center justify-between p-6 rounded-2xl border-2 transition-all hover:border-primary/50",
                     formData.entityType === type.id ? "border-primary bg-primary/5" : "border-gray-100 bg-white"
@@ -149,10 +162,7 @@ export default function ClientOnboarding({ initialData }: Props) {
                 <button
                   key={activity.id}
                   type="button"
-                  onClick={() => {
-                    setFormData({ ...formData, businessActivity: activity.id });
-                    nextStep();
-                  }}
+                  onClick={() => handleSMEActivitySelection(activity.id)}
                   className={cn(
                     "flex items-center justify-center p-4 rounded-2xl border-2 transition-all text-center font-bold",
                     formData.businessActivity === activity.id ? "border-primary bg-primary/5 text-primary" : "border-gray-100 bg-white text-gray-600"
@@ -166,7 +176,7 @@ export default function ClientOnboarding({ initialData }: Props) {
           </motion.div>
         )}
 
-        {((step === 3 && formData.entityType !== "SME") || step === 4) && (
+        {((step === 3 && formData.entityType === "NGO") || (step === 3 && formData.entityType === "ECOMMERCE") || (step === 4)) && (
           <motion.div
             key="step-final"
             initial={{ opacity: 0, x: 20 }}
@@ -174,37 +184,51 @@ export default function ClientOnboarding({ initialData }: Props) {
             exit={{ opacity: 0, x: -20 }}
             className="space-y-8"
           >
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">ما هو هدفك الرئيسي؟</h2>
-              <p className="text-gray-500">سنوجهك للمسار الأنسب بناءً على أولوياتك.</p>
-            </div>
-            <div className="grid grid-cols-1 gap-4">
-              {goals.map((goal) => (
-                <button
-                  key={goal.id}
-                  type="button"
-                  onClick={() => setFormData({ ...formData, primaryGoal: goal.id })}
-                  className={cn(
-                    "flex items-center justify-between p-6 rounded-2xl border-2 transition-all hover:border-primary/50",
-                    formData.primaryGoal === goal.id ? "border-primary bg-primary/5" : "border-gray-100 bg-white"
-                  )}
-                >
-                  <CheckCircle2 className={cn("text-primary", formData.primaryGoal === goal.id ? "opacity-100" : "opacity-0")} />
-                  <div className="flex items-center gap-4 text-right">
-                      <div>
-                        <p className="font-bold text-lg text-gray-800">{goal.label}</p>
-                        <p className="text-sm text-gray-500">{goal.description}</p>
+            {formData.entityType === "NGO" ? (
+              <>
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">ما هو هدفك الرئيسي؟</h2>
+                  <p className="text-gray-500">سنوجهك للمسار الأنسب بناءً على أولوياتك.</p>
+                </div>
+                <div className="grid grid-cols-1 gap-4">
+                  {goals.map((goal) => (
+                    <button
+                      key={goal.id}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, primaryGoal: goal.id })}
+                      className={cn(
+                        "flex items-center justify-between p-6 rounded-2xl border-2 transition-all hover:border-primary/50",
+                        formData.primaryGoal === goal.id ? "border-primary bg-primary/5" : "border-gray-100 bg-white"
+                      )}
+                    >
+                      <CheckCircle2 className={cn("text-primary", formData.primaryGoal === goal.id ? "opacity-100" : "opacity-0")} />
+                      <div className="flex items-center gap-4 text-right">
+                          <div>
+                            <p className="font-bold text-lg text-gray-800">{goal.label}</p>
+                            <p className="text-sm text-gray-500">{goal.description}</p>
+                          </div>
+                          <goal.icon size={24} className="text-primary" />
                       </div>
-                      <goal.icon size={24} className="text-primary" />
-                  </div>
-                </button>
-              ))}
-            </div>
+                    </button>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="text-center py-12">
+                <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                   <ShieldCheck size={40} className="text-primary" />
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">جاهز لبدء التقييم؟</h2>
+                <p className="text-gray-500">
+                  لقد حددنا المسار الأنسب لنشاطك (حماية البيانات الشخصية PDPL).
+                </p>
+              </div>
+            )}
+            
             <div className="pt-4 flex flex-col gap-4">
               <button
                 type="submit"
-                disabled={!formData.primaryGoal}
-                className="w-full py-4 bg-primary text-white font-bold rounded-2xl shadow-xl shadow-primary/20 disabled:opacity-50"
+                className="w-full py-4 bg-primary text-white font-bold rounded-2xl shadow-xl shadow-primary/20"
               >
                 تأكيد والبدء
               </button>

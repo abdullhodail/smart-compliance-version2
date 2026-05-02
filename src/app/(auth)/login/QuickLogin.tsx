@@ -3,6 +3,10 @@
 import { login } from "../actions";
 
 export default function QuickLogin() {
+  const showDemo = process.env.NEXT_PUBLIC_SHOW_DEMO_LOGIN === "true" || process.env.NODE_ENV === "development";
+
+  if (!showDemo) return null;
+
   const accounts = [
     { name: "تجربة NGO", email: "ngo_test@gmail.com" },
     { name: "تجربة Ecommerce", email: "ecommerce_test@gmail.com" },

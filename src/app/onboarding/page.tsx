@@ -2,6 +2,7 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import prisma from "@/lib/prisma";
+import { signOut } from "@/app/(auth)/actions";
 import ClientOnboarding from "./ClientOnboarding";
 
 export default async function OnboardingPage() {
@@ -24,9 +25,16 @@ export default async function OnboardingPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center py-12 px-6">
-      <div className="mb-12 flex items-center gap-3">
-        <Image src="/logo.svg" alt="logo" width={48} height={48} />
-        <h1 className="text-2xl font-bold text-primary">إعداد الحساب</h1>
+      <div className="w-full max-w-2xl flex items-center justify-between mb-8">
+        <form action={signOut}>
+          <button className="text-gray-400 hover:text-red-500 font-bold text-sm transition-colors">
+            تسجيل الخروج
+          </button>
+        </form>
+        <div className="flex items-center gap-3">
+          <Image src="/logo.svg" alt="logo" width={40} height={40} />
+          <h1 className="text-xl font-bold text-primary">إعداد الحساب</h1>
+        </div>
       </div>
 
       <div className="w-full max-w-2xl bg-white rounded-[32px] shadow-xl shadow-black/5 border border-gray-100 overflow-hidden">

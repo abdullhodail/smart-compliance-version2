@@ -12,14 +12,14 @@ export default function AuthLayout({
       <div className="hidden lg:flex relative bg-primary items-center justify-center p-12 overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
         <div className="relative z-10 text-center text-white">
-          <div className="relative w-32 h-32 mx-auto mb-8 animate-pulse">
+          <Link href="/" className="relative w-32 h-32 mx-auto mb-8 animate-pulse block hover:opacity-80 transition-opacity" title="العودة للصفحة الرئيسية">
             <Image
               src="/logo.svg"
               alt="logo"
               fill
               className="object-contain brightness-0 invert"
             />
-          </div>
+          </Link>
           <h2 className="text-3xl font-bold mb-4">منصة الامتثال الذكي</h2>
           <p className="text-white/70 max-w-md mx-auto text-lg">
             انضم إلى مئات الجهات التي وثقت بنا لأتمتة عمليات الحوكمة والامتثال.

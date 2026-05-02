@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
@@ -31,10 +32,10 @@ export default async function OnboardingPage() {
             تسجيل الخروج
           </button>
         </form>
-        <div className="flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity" title="العودة للصفحة الرئيسية">
           <Image src="/logo.svg" alt="logo" width={40} height={40} />
           <h1 className="text-xl font-bold text-primary">إعداد الحساب</h1>
-        </div>
+        </Link>
       </div>
 
       <div className="w-full max-w-2xl bg-white rounded-[32px] shadow-xl shadow-black/5 border border-gray-100 overflow-hidden">

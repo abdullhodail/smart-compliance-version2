@@ -68,6 +68,55 @@ export default function ClientOnboarding({ initialData }: Props) {
     nextStep();
   };
 
+  const getStepTitle = () => {
+    if (step === 2) {
+      switch (formData.entityType) {
+        case "ECOMMERCE": return "ما اسم متجرك؟";
+        case "SME": return "ما اسم المنشأة؟";
+        case "NGO": return "ما اسم الجمعية؟";
+        default: return "ما اسم المنشأة أو النشاط؟";
+      }
+    }
+    return "";
+  };
+
+  const getPlaceholder = () => {
+    switch (formData.entityType) {
+      case "ECOMMERCE": return "مثال: متجر النخبة";
+      case "SME": return "مثال: شركة المسار للخدمات";
+      case "NGO": return "مثال: جمعية البر الأهلية";
+      default: return "مثال: متجر أو منشأة أو جمعية";
+    }
+  };
+
+  const getConfirmationContent = () => {
+    if (formData.entityType === "ECOMMERCE") {
+      return {
+        title: "جاهز لبدء تقييم متجرِك؟",
+        subtitle: "سيبدأ التقييم بمراجعة جاهزية متجرك لحماية بيانات العملاء والطلبات والتوصيل والتسويق."
+      };
+    }
+    if (formData.entityType === "SME") {
+      return {
+        title: "جاهز لبدء تقييم منشأتك؟",
+        subtitle: "سيبدأ التقييم بمراجعة جاهزية منشأتك لحماية بيانات العملاء والموظفين والموردين حسب طبيعة النشاط."
+      };
+    }
+    if (formData.entityType === "NGO") {
+      if (formData.primaryGoal === "PDPL") {
+        return {
+          title: "جاهز لبدء تقييم حماية البيانات؟",
+          subtitle: "سيبدأ التقييم بمراجعة جاهزية الجمعية في التعامل مع بيانات المانحين والمستفيدين والمتطوعين."
+        };
+      }
+      return {
+        title: "جاهز لبدء مسار الحوكمة المبسطة؟",
+        subtitle: "سيبدأ المسار بمراجعة الجوانب الأساسية في الامتثال والشفافية والسلامة المالية."
+      };
+    }
+    return { title: "جاهز للبدء؟", subtitle: "سنقوم الآن ببدء مسار الامتثال المخصص لك." };
+  };
+
   return (
     <form className="p-8 md:p-12 text-right" action={submitOnboarding}>
       {/* Hidden inputs to capture state in FormData */}
@@ -79,40 +128,7 @@ export default function ClientOnboarding({ initialData }: Props) {
       <AnimatePresence mode="wait">
         {step === 1 && (
           <motion.div
-            key="step1"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="space-y-8"
-          >
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">ما هو اسم جهتك؟</h2>
-              <p className="text-gray-500">سنقوم بتخصيص التقارير بناءً على اسم الجهة.</p>
-            </div>
-            <input
-              type="text"
-              name="organizationName"
-              required
-              autoFocus
-              className="w-full px-6 py-4 rounded-2xl border-2 border-gray-100 focus:border-primary outline-none transition-all text-xl font-bold text-right"
-              placeholder="مثال: جمعية البر الأهلية"
-              value={formData.organizationName}
-              onChange={(e) => setFormData({ ...formData, organizationName: e.target.value })}
-            />
-            <button
-              type="button"
-              disabled={!formData.organizationName}
-              onClick={nextStep}
-              className="w-full py-4 bg-primary text-white font-bold rounded-2xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              المتابعة
-            </button>
-          </motion.div>
-        )}
-
-        {step === 2 && (
-          <motion.div
-            key="step2"
+            key="step-entity"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
@@ -141,7 +157,53 @@ export default function ClientOnboarding({ initialData }: Props) {
                 </button>
               ))}
             </div>
-            <button type="button" onClick={prevStep} className="text-gray-400 font-medium">الرجوع</button>
+          </motion.div>
+        )}
+
+        {step === 2 && (
+          <motion.div
+            key="step-name"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="space-y-8"
+          >
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">{getStepTitle()}</h2>
+              <p className="text-gray-500">سنقوم بتخصيص التقارير والوثائق بناءً على هذا الاسم.</p>
+            </div>
+            <input
+              type="text"
+              name="organizationName"
+              required
+              autoFocus
+              className="w-full px-6 py-4 rounded-2xl border-2 border-gray-100 focus:border-primary outline-none transition-all text-xl font-bold text-right"
+              placeholder={getPlaceholder()}
+              value={formData.organizationName}
+              onChange={(e) => setFormData({ ...formData, organizationName: e.target.value })}
+            />
+            <div className="flex flex-col gap-4">
+              <button
+                type="button"
+                disabled={!formData.organizationName}
+                onClick={() => {
+                  if (formData.entityType === "ECOMMERCE") {
+                    setFormData(prev => ({ ...prev, primaryGoal: "PDPL" }));
+                    setStep(3); // Go to confirmation
+                  } else if (formData.entityType === "SME") {
+                    setStep(3); // Go to activity
+                  } else if (formData.entityType === "NGO") {
+                    setStep(4); // Go to track selection
+                  } else {
+                    nextStep();
+                  }
+                }}
+                className="w-full py-4 bg-primary text-white font-bold rounded-2xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                المتابعة
+              </button>
+              <button type="button" onClick={prevStep} className="text-gray-400 font-medium">الرجوع</button>
+            </div>
           </motion.div>
         )}
 
@@ -176,7 +238,48 @@ export default function ClientOnboarding({ initialData }: Props) {
           </motion.div>
         )}
 
-        {((step === 3 && formData.entityType === "NGO") || (step === 3 && formData.entityType === "ECOMMERCE") || (step === 4)) && (
+        {step === 4 && formData.entityType === "NGO" && (
+          <motion.div
+            key="step-ngo-track"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="space-y-8"
+          >
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">ما هو هدفك الرئيسي؟</h2>
+              <p className="text-gray-500">سنوجهك للمسار الأنسب بناءً على أولوياتك.</p>
+            </div>
+            <div className="grid grid-cols-1 gap-4">
+              {goals.map((goal) => (
+                <button
+                  key={goal.id}
+                  type="button"
+                  onClick={() => {
+                    setFormData({ ...formData, primaryGoal: goal.id });
+                    nextStep();
+                  }}
+                  className={cn(
+                    "flex items-center justify-between p-6 rounded-2xl border-2 transition-all hover:border-primary/50",
+                    formData.primaryGoal === goal.id ? "border-primary bg-primary/5" : "border-gray-100 bg-white"
+                  )}
+                >
+                  <CheckCircle2 className={cn("text-primary", formData.primaryGoal === goal.id ? "opacity-100" : "opacity-0")} />
+                  <div className="flex items-center gap-4 text-right">
+                      <div>
+                        <p className="font-bold text-lg text-gray-800">{goal.label}</p>
+                        <p className="text-sm text-gray-500">{goal.description}</p>
+                      </div>
+                      <goal.icon size={24} className="text-primary" />
+                  </div>
+                </button>
+              ))}
+            </div>
+            <button type="button" onClick={prevStep} className="text-gray-400 font-medium">الرجوع</button>
+          </motion.div>
+        )}
+
+        {((step === 5) || (step === 3 && formData.entityType === "ECOMMERCE") || (step === 4 && formData.entityType === "SME")) && (
           <motion.div
             key="step-final"
             initial={{ opacity: 0, x: 20 }}
@@ -184,46 +287,15 @@ export default function ClientOnboarding({ initialData }: Props) {
             exit={{ opacity: 0, x: -20 }}
             className="space-y-8"
           >
-            {formData.entityType === "NGO" ? (
-              <>
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">ما هو هدفك الرئيسي؟</h2>
-                  <p className="text-gray-500">سنوجهك للمسار الأنسب بناءً على أولوياتك.</p>
-                </div>
-                <div className="grid grid-cols-1 gap-4">
-                  {goals.map((goal) => (
-                    <button
-                      key={goal.id}
-                      type="button"
-                      onClick={() => setFormData({ ...formData, primaryGoal: goal.id })}
-                      className={cn(
-                        "flex items-center justify-between p-6 rounded-2xl border-2 transition-all hover:border-primary/50",
-                        formData.primaryGoal === goal.id ? "border-primary bg-primary/5" : "border-gray-100 bg-white"
-                      )}
-                    >
-                      <CheckCircle2 className={cn("text-primary", formData.primaryGoal === goal.id ? "opacity-100" : "opacity-0")} />
-                      <div className="flex items-center gap-4 text-right">
-                          <div>
-                            <p className="font-bold text-lg text-gray-800">{goal.label}</p>
-                            <p className="text-sm text-gray-500">{goal.description}</p>
-                          </div>
-                          <goal.icon size={24} className="text-primary" />
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <div className="text-center py-12">
-                <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                   <ShieldCheck size={40} className="text-primary" />
-                </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">جاهز لبدء التقييم؟</h2>
-                <p className="text-gray-500">
-                  لقد حددنا المسار الأنسب لنشاطك (حماية البيانات الشخصية PDPL).
-                </p>
+            <div className="text-center py-8">
+              <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                 <ShieldCheck size={40} className="text-primary" />
               </div>
-            )}
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">{getConfirmationContent().title}</h2>
+              <p className="text-gray-500">
+                {getConfirmationContent().subtitle}
+              </p>
+            </div>
             
             <div className="pt-4 flex flex-col gap-4">
               <button
@@ -232,7 +304,11 @@ export default function ClientOnboarding({ initialData }: Props) {
               >
                 تأكيد والبدء
               </button>
-              <button type="button" onClick={prevStep} className="text-gray-400 font-medium">الرجوع</button>
+              <button type="button" onClick={() => {
+                if (formData.entityType === "ECOMMERCE") setStep(2);
+                else if (formData.entityType === "SME") setStep(3);
+                else setStep(4);
+              }} className="text-gray-400 font-medium">الرجوع</button>
             </div>
           </motion.div>
         )}

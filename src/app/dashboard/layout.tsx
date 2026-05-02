@@ -71,10 +71,10 @@ export default async function DashboardLayout({
     <div className="min-h-screen bg-gray-50 flex" dir="rtl">
       {/* Sidebar */}
       <aside className="w-64 bg-white border-l border-gray-200 hidden md:flex flex-col">
-        <div className="p-6 flex items-center gap-3 border-b border-gray-50">
+        <Link href="/" className="p-6 flex items-center gap-3 border-b border-gray-50 hover:bg-gray-50 transition-colors" title="العودة للصفحة الرئيسية">
           <Image src="/logo.svg" alt="logo" width={32} height={32} />
           <span className="text-xl font-bold text-primary">الامتثال الذكي</span>
-        </div>
+        </Link>
 
         <nav className="flex-1 p-4 space-y-1">
           {sidebarLinks.map((link) => (

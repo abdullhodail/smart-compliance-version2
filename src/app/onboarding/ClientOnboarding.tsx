@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useActionState, useTransition } from "react";
+import { useFormStatus } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, Building2, ShoppingBag, Briefcase, ShieldCheck, LayoutDashboard, Target } from "lucide-react";
+import { CheckCircle2, Building2, ShoppingBag, Briefcase, ShieldCheck, LayoutDashboard, Target, Loader2, AlertCircle } from "lucide-react";
 import { submitOnboarding } from "./actions";
 import { cn } from "@/lib/utils";
 
@@ -14,7 +15,30 @@ interface Props {
   };
 }
 
+function SubmitButton({ isPending }: { isPending: boolean }) {
+  return (
+    <button
+      type="submit"
+      disabled={isPending}
+      className="w-full py-4 bg-primary text-white font-bold rounded-2xl shadow-xl shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed transition-all"
+    >
+      {isPending ? (
+        <>
+          <Loader2 className="animate-spin" size={20} />
+          <span>جاري الإعداد...</span>
+        </>
+      ) : (
+        "تأكيد والبدء"
+      )}
+    </button>
+  );
+}
+
 export default function ClientOnboarding({ initialData }: Props) {
+  const [isTransitionPending, startTransition] = useTransition();
+  const [state, formAction, isActionPending] = useActionState(submitOnboarding, null);
+  const isPending = isActionPending || isTransitionPending;
+
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<{
     organizationName: string;
@@ -52,22 +76,6 @@ export default function ClientOnboarding({ initialData }: Props) {
     { id: "OTHER", label: "أخرى / SME عام" },
   ];
 
-  const handleEntitySelection = (typeId: string) => {
-    setFormData({ ...formData, entityType: typeId });
-    if (typeId === "ECOMMERCE") {
-      // Ecommerce goes straight to PDPL
-      setFormData(prev => ({ ...prev, entityType: typeId, primaryGoal: "PDPL" }));
-      nextStep();
-    } else {
-      nextStep();
-    }
-  };
-
-  const handleSMEActivitySelection = (activityId: string) => {
-    setFormData({ ...formData, businessActivity: activityId, primaryGoal: "PDPL" });
-    nextStep();
-  };
-
   const getStepTitle = () => {
     if (step === 2) {
       switch (formData.entityType) {
@@ -87,6 +95,16 @@ export default function ClientOnboarding({ initialData }: Props) {
       case "NGO": return "مثال: جمعية البر الأهلية";
       default: return "مثال: متجر أو منشأة أو جمعية";
     }
+  };
+
+  const handleEntitySelection = (typeId: string) => {
+    setFormData({ ...formData, entityType: typeId });
+    nextStep();
+  };
+
+  const handleSMEActivitySelection = (activityId: string) => {
+    setFormData({ ...formData, businessActivity: activityId, primaryGoal: "PDPL" });
+    nextStep();
   };
 
   const getConfirmationContent = () => {
@@ -117,14 +135,15 @@ export default function ClientOnboarding({ initialData }: Props) {
     return { title: "جاهز للبدء؟", subtitle: "سنقوم الآن ببدء مسار الامتثال المخصص لك." };
   };
 
-  return (
-    <form className="p-8 md:p-12 text-right" action={submitOnboarding}>
-      {/* Hidden inputs to capture state in FormData */}
-      <input type="hidden" name="organizationName" value={formData.organizationName} />
-      <input type="hidden" name="entityType" value={formData.entityType} />
-      <input type="hidden" name="primaryGoal" value={formData.primaryGoal} />
-      <input type="hidden" name="businessActivity" value={formData.businessActivity || ""} />
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    startTransition(() => {
+      formAction(formData);
+    });
+  };
 
+  return (
+    <form className="p-8 md:p-12 text-right" onSubmit={handleSubmit}>
       <AnimatePresence mode="wait">
         {step === 1 && (
           <motion.div
@@ -174,7 +193,7 @@ export default function ClientOnboarding({ initialData }: Props) {
             </div>
             <input
               type="text"
-              name="organizationName"
+              name="organizationName_visible"
               required
               autoFocus
               className="w-full px-6 py-4 rounded-2xl border-2 border-gray-100 focus:border-primary outline-none transition-all text-xl font-bold text-right"
@@ -296,14 +315,16 @@ export default function ClientOnboarding({ initialData }: Props) {
                 {getConfirmationContent().subtitle}
               </p>
             </div>
+
+            {state?.error && (
+              <div className="bg-red-50 border border-red-100 p-4 rounded-2xl flex items-start gap-3 text-red-600 text-sm">
+                <AlertCircle size={18} className="mt-0.5 shrink-0" />
+                <p>{state.error}</p>
+              </div>
+            )}
             
             <div className="pt-4 flex flex-col gap-4">
-              <button
-                type="submit"
-                className="w-full py-4 bg-primary text-white font-bold rounded-2xl shadow-xl shadow-primary/20"
-              >
-                تأكيد والبدء
-              </button>
+              <SubmitButton isPending={isPending} />
               <button type="button" onClick={() => {
                 if (formData.entityType === "ECOMMERCE") setStep(2);
                 else if (formData.entityType === "SME") setStep(3);

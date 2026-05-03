@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   CheckCircle2, 
   AlertCircle, 
@@ -34,6 +35,8 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
 
   const status = getStatusLabel();
 
+  const [showNotification, setShowNotification] = useState(false);
+
   const plans = [
     {
       name: "تشخيص الجاهزية",
@@ -47,7 +50,7 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
       ],
       highlight: false,
       badge: null,
-      cta: "احصل على التشخيص فقط"
+      cta: "اطلب تفعيل التشخيص"
     },
     {
       name: "بدء التطبيق",
@@ -63,7 +66,7 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
       ],
       highlight: true,
       badge: "الأكثر طلبًا",
-      cta: "ابدأ التنظيم الآن"
+      cta: "ابدأ تنفيذ خطة الـ 14 يوم"
     },
     {
       name: "حزمة البداية الكاملة",
@@ -77,12 +80,40 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
       ],
       highlight: false,
       badge: null,
-      cta: "جهز الحزمة الكاملة"
+      cta: "اطلب الحزمة التشغيلية"
     },
   ];
 
   return (
-    <div className="max-w-4xl mx-auto py-12 px-6">
+    <div className="max-w-4xl mx-auto py-12 px-6 relative">
+      {/* Notification Toast */}
+      <AnimatePresence>
+        {showNotification && (
+          <motion.div
+            initial={{ opacity: 0, y: -50, x: "-50%" }}
+            animate={{ opacity: 1, y: 20, x: "-50%" }}
+            exit={{ opacity: 0, y: -50, x: "-50%" }}
+            className="fixed top-0 left-1/2 z-50 w-[90%] max-w-md bg-white border-2 border-primary rounded-3xl shadow-2xl p-6 text-center"
+          >
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-12 h-12 bg-primary/5 rounded-full flex items-center justify-center text-primary">
+                <HelpCircle size={24} />
+              </div>
+              <p className="font-bold text-gray-900 leading-relaxed">
+                سيتم تفعيل الدفع الإلكتروني قريبًا. <br />
+                للتفعيل التجريبي تواصل معنا.
+              </p>
+              <button 
+                onClick={() => setShowNotification(false)}
+                className="mt-2 text-sm font-bold text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                إغلاق
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* 1. Result Summary Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -96,13 +127,13 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
           <div className="relative inline-block mb-8">
              <div className="text-8xl md:text-9xl font-black text-primary">{score}%</div>
              <motion.div 
-               className={cn("absolute -top-4 -right-4 px-4 py-1 rounded-lg text-white font-bold text-sm", status.color.replace('text', 'bg'))}
-               initial={{ scale: 0 }}
-               animate={{ scale: 1 }}
-               transition={{ delay: 0.5, type: "spring" }}
-             >
-               {status.label}
-             </motion.div>
+                className={cn("absolute -top-4 -right-4 px-4 py-1 rounded-lg text-white font-bold text-sm", status.color.replace('text', 'bg'))}
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.5, type: "spring" }}
+              >
+                {status.label}
+              </motion.div>
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">{status.message}</h2>
           <p className="text-gray-500">تم تحليل نشاطك بناءً على متطلبات نظام حماية البيانات السعودي (PDPL).</p>
@@ -181,7 +212,7 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
               </ul>
 
               <button
-                onClick={() => alert("سيتم تفعيل الدفع الإلكتروني قريبًا. للتفعيل التجريبي تواصل معنا.")}
+                onClick={() => setShowNotification(true)}
                 className={cn(
                   "w-full py-3 rounded-2xl font-black text-sm transition-all",
                   plan.highlight

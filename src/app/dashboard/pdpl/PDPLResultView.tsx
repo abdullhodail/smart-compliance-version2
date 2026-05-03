@@ -35,7 +35,7 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
 
   const status = getStatusLabel();
 
-  const [showNotification, setShowNotification] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<{name: string, price: string} | null>(null);
 
   const plans = [
     {
@@ -84,32 +84,76 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
     },
   ];
 
+  const handleWhatsAppClick = () => {
+    // TODO: move WhatsApp phone number to environment variable.
+    const phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
+    if (!phoneNumber) {
+      alert("رقم الواتساب غير متوفر حالياً. الرجاء المحاولة لاحقاً.");
+      return;
+    }
+    
+    let message = "";
+    if (selectedPlan?.price === "149") {
+       message = "أبغى أطلب تفعيل تشخيص الجاهزية 149 ريال لمنصة الامتثال الذكي";
+    } else if (selectedPlan?.price === "299") {
+       message = "أبغى أبدأ حزمة 299 لتنظيم حماية البيانات وخطة تنفيذ 14 يوم";
+    } else if (selectedPlan?.price === "499") {
+       message = "أبغى أطلب الحزمة التشغيلية 499 لمنصة الامتثال الذكي";
+    }
+
+    const encodedMessage = encodeURIComponent(message);
+    window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
+  };
+
   return (
     <div className="max-w-4xl mx-auto py-12 px-6 relative">
-      {/* Notification Toast */}
+      {/* Activation Modal */}
       <AnimatePresence>
-        {showNotification && (
+        {selectedPlan && (
           <motion.div
-            initial={{ opacity: 0, y: -50, x: "-50%" }}
-            animate={{ opacity: 1, y: 20, x: "-50%" }}
-            exit={{ opacity: 0, y: -50, x: "-50%" }}
-            className="fixed top-0 left-1/2 z-50 w-[90%] max-w-md bg-white border-2 border-primary rounded-3xl shadow-2xl p-6 text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+            onClick={() => setSelectedPlan(null)}
           >
-            <div className="flex flex-col items-center gap-3">
-              <div className="w-12 h-12 bg-primary/5 rounded-full flex items-center justify-center text-primary">
-                <HelpCircle size={24} />
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-sm bg-white rounded-3xl shadow-2xl p-8 text-center border border-gray-100"
+            >
+              <div className="w-16 h-16 bg-primary/5 rounded-full flex items-center justify-center text-primary mx-auto mb-6">
+                <ShieldCheck size={32} />
               </div>
-              <p className="font-bold text-gray-900 leading-relaxed">
-                سيتم تفعيل الدفع الإلكتروني قريبًا. <br />
-                للتفعيل التجريبي تواصل معنا.
+              
+              <h3 className="text-xl font-black text-gray-900 mb-2">
+                {selectedPlan.name}
+              </h3>
+              <div className="text-2xl font-black text-primary mb-6">
+                {selectedPlan.price} <span className="text-sm text-gray-400">ريال</span>
+              </div>
+              
+              <p className="font-bold text-gray-700 bg-gray-50 py-3 px-4 rounded-xl mb-8 border border-gray-100">
+                التفعيل التجريبي يتم عبر التواصل المباشر
               </p>
-              <button 
-                onClick={() => setShowNotification(false)}
-                className="mt-2 text-sm font-bold text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                إغلاق
-              </button>
-            </div>
+
+              <div className="flex flex-col gap-3">
+                <button 
+                  onClick={handleWhatsAppClick}
+                  className="w-full py-4 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-2xl font-black transition-colors flex items-center justify-center gap-2 shadow-lg shadow-[#25D366]/20"
+                >
+                  تواصل عبر واتساب
+                </button>
+                <button 
+                  onClick={() => setSelectedPlan(null)}
+                  className="w-full py-3 text-gray-400 hover:text-gray-600 font-bold transition-colors"
+                >
+                  إلغاء
+                </button>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -212,7 +256,7 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
               </ul>
 
               <button
-                onClick={() => setShowNotification(true)}
+                onClick={() => setSelectedPlan({ name: plan.name, price: plan.price })}
                 className={cn(
                   "w-full py-3 rounded-2xl font-black text-sm transition-all",
                   plan.highlight

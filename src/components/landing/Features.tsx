@@ -6,25 +6,25 @@ import { cn } from "@/lib/utils";
 
 const steps = [
   {
-    title: "1. جاوب على أسئلة بسيطة",
+    title: "1. أجب على 10 أسئلة واضحة",
     description: "أسئلة مباشرة وسهلة حول طريقة تعاملك مع البيانات، مصممة لأصحاب الأعمال وليس لخبراء القانون.",
     icon: ClipboardCheck,
     color: "bg-primary",
   },
   {
-    title: "2. اعرف نتيجتك فوراً",
+    title: "2. اعرف نتيجة جاهزيتك فورًا",
     description: "تحليل ذكي يوضح لك مستوى الجاهزية الحالي ويحدد مواطن القوة والفجوات التي تحتاج لتنظيم.",
     icon: PieChart,
     color: "bg-secondary",
   },
   {
-    title: "3. احصل على خطة عمل",
+    title: "3. اكتشف أهم الفجوات حسب الأولوية",
     description: "توصيات واضحة ومرتبة بالخطوات العملية التي تحتاج اتخاذها لتحسين مستوى جاهزيتك.",
     icon: LayoutList,
     color: "bg-blue-600",
   },
   {
-    title: "4. وثائق جاهزة للتطبيق",
+    title: "4. ابدأ بخطة تنفيذ 14 يوم",
     description: "احصل على مسودات لسياسات الخصوصية واتفاقيات معالجة البيانات جاهزة للاستخدام في نشاطك.",
     icon: FileText,
     color: "bg-teal-600",
@@ -42,7 +42,7 @@ export default function Features() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            كيف تساعدك منصة الامتثال الذكي؟
+            من التقييم إلى بداية التطبيق
           </motion.h2>
           <motion.p
             className="text-lg text-gray-600"
@@ -51,7 +51,7 @@ export default function Features() {
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
           >
-            بسطنا رحلة الامتثال لتكون عملية واضحة تبدأ بتقييم بسيط وتنتهي بتنظيم كامل لمتطلبات حماية البيانات.
+            رحلة بسيطة تبدأ بأسئلة واضحة وتنتهي بخطة تنفيذ عملية.
           </motion.p>
         </div>
 

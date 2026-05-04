@@ -48,7 +48,7 @@ export default function PricingSection() {
           <ul className="space-y-3 mb-8 font-body">
             {[
               "تقييم جاهزية النشاط لحماية البيانات",
-              "مؤشر الجاهزية الرقمي",
+              "نتيجة جاهزية فورية",
               "الفجوات الرئيسية المكتشفة",
               "توصيات مختصرة قابلة للتطبيق"
             ].map((f, i) => (
@@ -68,7 +68,7 @@ export default function PricingSection() {
           </Link>
 
           <p className="mt-6 text-center text-xs text-gray-400 font-body leading-relaxed">
-            بعد رؤية نتيجتك، يمكنك فعّل التقارير والمستندات بحسب احتياجك.
+            بعد رؤية نتيجتك، يمكنك الاطلاع على الباقات واختيار ما يناسبك.
           </p>
         </motion.div>
 

@@ -17,18 +17,20 @@ export default function Hero() {
               transition={{ duration: 0.5 }}
             >
               <h1 className="text-5xl lg:text-6xl font-black text-gray-900 leading-tight mb-6 font-heading">
-                اعرف جاهزية نشاطك لحماية بيانات العملاء خلال <span className="text-primary italic">5 دقائق</span>
+                اعرف جاهزية منشأتك لحماية البيانات الشخصية خلال <span className="text-primary italic">5 دقائق</span>
               </h1>
-              <p className="text-xl text-gray-600 mb-10 leading-relaxed max-w-xl font-body">
-                تقييم مبسط بدون تعقيد قانوني يوضح لك وضعك ويعطيك خطة عمل واضحة.
+              <p className="text-xl text-gray-600 mb-4 leading-relaxed max-w-xl font-body">
+                تقييم مبسط يساعدك تفهم وضع منشأتك، أهم الفجوات، وأول خطوات تنظيم التعامل مع البيانات الشخصية.
               </p>
+              <p className="text-sm font-bold text-gray-500 mb-10">مناسب للمتاجر الإلكترونية، المنشآت الصغيرة والمتوسطة، والجمعيات</p>
               
-              <div className="flex flex-wrap gap-4 justify-end">
+              <div className="flex flex-col sm:flex-row items-center gap-4 justify-end">
+                <p className="text-sm text-gray-400 font-body">10 أسئلة فقط، والنتيجة تظهر فورًا</p>
                 <Link
                   href="/register?next=/dashboard/pdpl"
-                  className="px-8 py-4 bg-primary text-white font-black rounded-2xl hover:bg-primary-light transition-all flex items-center gap-2 group text-lg shadow-xl shadow-primary/20"
+                  className="px-8 py-4 bg-primary text-white font-black rounded-2xl hover:bg-primary-light transition-all flex items-center justify-center gap-2 group text-lg shadow-xl shadow-primary/20 w-full sm:w-auto"
                 >
-                  ابدأ التقييم الآن
+                  ابدأ التقييم المجاني
                   <ArrowLeft className="group-hover:-translate-x-1 transition-transform" />
                 </Link>
               </div>
@@ -46,7 +48,7 @@ export default function Hero() {
               <div className="bg-white rounded-[40px] border border-gray-100 shadow-xl overflow-hidden max-w-md mx-auto w-full">
                 {/* Header */}
                 <div className="p-8 bg-primary text-white text-center">
-                  <p className="text-xs font-bold opacity-80 mb-2 uppercase tracking-widest font-body">مؤشر الجاهزية الرقمي</p>
+                  <p className="text-xs font-bold opacity-80 mb-2 uppercase tracking-widest font-body">مثال على تقرير الجاهزية</p>
                   <div className="text-6xl font-black mb-4 font-heading">62%</div>
                   <div className="w-full h-2 bg-white/20 rounded-full overflow-hidden">
                     <motion.div 
@@ -67,8 +69,8 @@ export default function Hero() {
                   <div className="space-y-3 font-body">
                     {[
                       "لا توجد سياسة خصوصية واضحة",
-                      "لا يوجد تنظيم لمعالجة البيانات",
-                      "ضعف في إدارة الموافقات"
+                      "لا توجد آلية لتنظيم معالجة البيانات",
+                      "ضعف في توثيق الموافقات"
                     ].map((gap, i) => (
                       <div key={i} className="flex items-center justify-end gap-3 p-3 bg-red-50/50 rounded-xl border border-red-50">
                         <span className="text-sm font-bold text-red-900">{gap}</span>
@@ -81,7 +83,7 @@ export default function Hero() {
                 {/* Action Plan Preview */}
                 <div className="p-8 pt-0 space-y-4">
                   <h4 className="text-lg font-black text-gray-900 flex items-center justify-end gap-2 text-right font-heading">
-                    خطة العمل المقترحة
+                    خطة تنفيذ مقترحة
                     <CheckCircle2 size={20} className="text-green-500" />
                   </h4>
                   <div className="space-y-2 opacity-50 blur-[0.5px]">
@@ -89,7 +91,7 @@ export default function Hero() {
                     <div className="h-4 bg-gray-100 rounded-lg w-3/4 mr-auto" />
                   </div>
                   <div className="p-4 border-2 border-dashed border-gray-100 rounded-2xl flex items-center justify-center gap-2 text-gray-400 font-bold text-sm font-body text-center">
-                    الخطة الكاملة متاحة بعد التقييم
+                    خطة 14 يوم لترتيب أولوياتك والبدء بالتطبيق
                   </div>
                 </div>
               </div>

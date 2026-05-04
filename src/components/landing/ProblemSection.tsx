@@ -6,28 +6,33 @@ import { ShieldAlert, FileWarning, Search, HelpCircle, Users, Scale } from "luci
 export default function ProblemSection() {
   const problems = [
     {
-      title: "جمع بيانات العملاء بدون تنظيم",
+      title: "جمع بيانات العملاء أو المستفيدين بدون تنظيم",
       icon: Search,
       color: "bg-blue-50 text-blue-600",
     },
     {
-      title: "لا توجد سياسة خصوصية واضحة في الموقع",
+      title: "لا توجد سياسة خصوصية واضحة",
       icon: FileWarning,
       color: "bg-amber-50 text-amber-600",
     },
     {
-      title: "استخدام البيانات بدون معرفة الطريقة الصحيحة",
+      title: "استخدام البيانات بدون توثيق الموافقة أو التنبيه",
       icon: ShieldAlert,
       color: "bg-red-50 text-red-600",
     },
     {
-      title: "الاعتماد على اجتهادات شخصية غير موثقة",
+      title: "الاعتماد على اجتهادات داخلية غير موثقة",
       icon: HelpCircle,
       color: "bg-purple-50 text-purple-600",
     },
     {
-      title: "مخاطر قانونية أو فقدان ثقة العملاء",
+      title: "مخاطر تنظيمية وغرامات محتملة",
       icon: Scale,
+      color: "bg-orange-50 text-orange-600",
+    },
+    {
+      title: "ضعف ثقة العملاء أو المستفيدين",
+      icon: Users,
       color: "bg-gray-50 text-gray-600",
     },
   ];
@@ -42,7 +47,7 @@ export default function ProblemSection() {
             viewport={{ once: true }}
             className="text-3xl md:text-4xl font-black text-gray-900 mb-6 font-heading"
           >
-            لماذا يجب أن تهتم بخصوصية البيانات الآن؟
+            هل بيانات منشأتك منظمة بما يكفي؟
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -51,7 +56,7 @@ export default function ProblemSection() {
             transition={{ delay: 0.1 }}
             className="text-lg text-gray-600 font-body leading-relaxed"
           >
-            مع بدء تطبيق متطلبات حماية البيانات في السعودية بشكل فعلي، أصبح من المهم معرفة وضعك وتصحيح الأخطاء مبكرًا لتجنب أي تعقيدات قد تواجه نشاطك.
+            كثير من المنشآت تتعامل مع البيانات بشكل يومي بدون تنظيم واضح. هذه بعض المشاكل الشائعة:
           </motion.p>
         </div>
 
@@ -82,9 +87,9 @@ export default function ProblemSection() {
             <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center mb-6">
               <Users size={28} />
             </div>
-            <h3 className="text-xl font-bold font-heading mb-3 italic">لا تترك نشاطك للمصادفة</h3>
+            <h3 className="text-xl font-bold font-heading mb-3 italic">لا تترك جاهزية منشأتك للمصادفة</h3>
             <p className="text-white/80 font-body text-sm leading-relaxed">
-              انضم للمنشآت التي بدأت فعلياً في تنظيم بياناتها وضمان ثقة عملائها.
+              ابدأ بتقييم بسيط يوضح وضعك الحالي وأولويات التحسين
             </p>
           </motion.div>
         </div>

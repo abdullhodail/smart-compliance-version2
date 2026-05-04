@@ -20,10 +20,10 @@ export default function CTASection() {
           className="max-w-3xl mx-auto"
         >
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-            ابدأ بتأمين امتثالك اليوم
+            ابدأ بتشخيص جاهزية منشأتك مجانًا
           </h2>
           <p className="text-xl text-white/80 mb-10 leading-relaxed">
-            لا تترك نشاطك للفجوات التنظيمية. اعرف جاهزيتك في دقائق معدودة وابدأ تنظيم متطلبات حماية البيانات بكل سهولة.
+            اكتشف خلال دقائق أين تقف منشأتك من جاهزية حماية البيانات الشخصية، وما أهم الفجوات التي تحتاج انتباهك.
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
@@ -37,7 +37,7 @@ export default function CTASection() {
           </div>
           
           <p className="mt-8 text-white/60 text-sm font-medium">
-            * لا يتطلب التقييم أي خبرة قانونية سابقة
+            * لا تحتاج خبرة قانونية. الأسئلة مبسطة وموجهة للتشغيل اليومي.
           </p>
         </motion.div>
       </div>

@@ -68,26 +68,26 @@ export default function OutcomeSection() {
               viewport={{ once: true }}
               className="text-3xl md:text-5xl font-bold text-gray-900 mb-8"
             >
-              مخرجات واضحة <br />
-              <span className="text-primary italic">تختصر عليك الجهد</span>
+              مخرجات تساعدك <br />
+              <span className="text-primary italic">تبدأ التنظيم مباشرة</span>
             </motion.h2>
 
             <div className="space-y-8">
               {[
                 {
-                  title: "درجة الجاهزية الرقمية",
+                  title: "تقرير جاهزية PDPL",
                   desc: "مؤشر دقيق يوضح مدى توافق نشاطك مع متطلبات حماية البيانات الشخصية.",
                 },
                 {
-                  title: "تحديد الفجوات والمتطلبات",
+                  title: "تحليل فجوات حسب الأولوية",
                   desc: "تقرير مفصل يوضح الجوانب التي تحتاج لتنظيم إداري أو تقني.",
                 },
                 {
-                  title: "خطة عمل مخصصة لنشاطك",
+                  title: "خطة تنفيذ 14 يوم",
                   desc: "خطوات عملية محددة زمنياً وتوعوياً لتغطية كافة المتطلبات.",
                 },
                 {
-                  title: "وثائق وسياسات نموذجية",
+                  title: "مخرجات قابلة للتعديل",
                   desc: "مستندات جاهزة للتعديل والتوقيع، تشمل سياسات الخصوصية ومعالجة البيانات.",
                 },
               ].map((item, index) => (
@@ -121,7 +121,7 @@ export default function OutcomeSection() {
                 href="/dashboard/pdpl"
                 className="inline-flex items-center gap-2 text-primary font-bold hover:gap-4 transition-all"
               >
-                ابدأ رحلتك الآن
+                ابدأ التقييم المجاني
                 <ArrowRight size={20} />
               </a>
             </motion.div>

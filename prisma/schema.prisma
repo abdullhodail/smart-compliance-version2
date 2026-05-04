@@ -65,3 +65,15 @@ model Subscription {
   expiresAt      DateTime
   createdAt      DateTime     @default(now())
 }
+
+model ConversionEvent {
+  id            String   @id @default(cuid())
+  eventName     String
+  packageId     String?
+  packageName   String?
+  userId        String?
+  assessmentId  String?
+  entityType    String?
+  path          String?
+  createdAt     DateTime @default(now())
+}

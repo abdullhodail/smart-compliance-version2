@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   CheckCircle2, 
@@ -15,6 +15,7 @@ import {
 import { cn } from "@/lib/utils";
 import { pdplQuestions } from "./content";
 import { EntityType } from "@prisma/client";
+import { trackConversionEvent } from "@/app/actions/tracking";
 
 interface Props {
   score: number;
@@ -24,6 +25,14 @@ interface Props {
 }
 
 export default function PDPLResultView({ score, answers, entityType, onNavigateDocs }: Props) {
+  useEffect(() => {
+    trackConversionEvent({
+      eventName: "result_page_view",
+      entityType: entityType,
+      path: window.location.pathname
+    });
+  }, [entityType]);
+
   const gaps = pdplQuestions
     .filter(q => answers[q.id] === false || answers[q.id] === "unknown")
     .slice(0, 3);
@@ -103,6 +112,15 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
     }
 
     const encodedMessage = encodeURIComponent(message);
+    
+    trackConversionEvent({
+      eventName: "whatsapp_click",
+      packageId: selectedPlan?.price,
+      packageName: selectedPlan?.name,
+      entityType: entityType,
+      path: window.location.pathname
+    });
+
     window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
   };
 
@@ -334,7 +352,16 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
               </ul>
 
               <button
-                onClick={() => setSelectedPlan({ name: plan.name, price: plan.price })}
+                onClick={() => {
+                  trackConversionEvent({
+                    eventName: "package_click",
+                    packageId: plan.price,
+                    packageName: plan.name,
+                    entityType: entityType,
+                    path: window.location.pathname
+                  });
+                  setSelectedPlan({ name: plan.name, price: plan.price });
+                }}
                 className={cn(
                   "w-full py-3 rounded-2xl font-black text-sm transition-all",
                   plan.highlight

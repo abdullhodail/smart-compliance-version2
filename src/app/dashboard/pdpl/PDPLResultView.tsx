@@ -9,7 +9,8 @@ import {
   ShieldCheck,
   TrendingUp,
   Star,
-  HelpCircle
+  HelpCircle,
+  Target
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { pdplQuestions } from "./content";
@@ -41,7 +42,7 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
     {
       name: "تشخيص الجاهزية",
       price: "149",
-      desc: "مناسب إذا كنت تريد معرفة وضعك فقط",
+      desc: "لمعرفة وضعك الحالي وأبرز الفجوات",
       features: [
         "نتيجة الجاهزية التفصيلية",
         "أهم الفجوات المكتشفة",
@@ -55,7 +56,7 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
     {
       name: "بدء التطبيق",
       price: "299",
-      desc: "الأفضل لمعظم المتاجر والمنشآت الصغيرة",
+      desc: "خطة تنفيذ 14 يوم مع مخرجات جاهزة للاستخدام",
       features: [
         "تقرير جاهزية شامل",
         "خطة عمل لـ 14 يوم",
@@ -65,13 +66,13 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
         "تصدير PDF",
       ],
       highlight: true,
-      badge: "الأكثر طلبًا",
+      badge: "موصى بها",
       cta: "ابدأ تنفيذ خطة الـ 14 يوم"
     },
     {
       name: "حزمة البداية الكاملة",
       price: "499",
-      desc: "مناسب إذا تريد ملف بداية أوسع",
+      desc: "مخرجات تشغيلية شاملة لملف بداية متكامل",
       features: [
         "كل ما في باقة 299",
         "مخرجات أكثر تفصيلاً",
@@ -158,13 +159,13 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
         )}
       </AnimatePresence>
 
-      {/* 1. Result Summary Section */}
+      {/* 1. Score Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="bg-white rounded-[40px] border border-gray-100 shadow-xl overflow-hidden mb-8"
       >
-        <div className="p-10 md:p-16 text-center border-b border-gray-50">
+        <div className="p-10 md:p-16 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6 font-bold text-sm bg-primary/5 text-primary">
             جاهزية الامتثال المبدئية
           </div>
@@ -179,49 +180,126 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
                 {status.label}
               </motion.div>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">{status.message}</h2>
           <p className="text-gray-500">تم تحليل نشاطك بناءً على متطلبات نظام حماية البيانات السعودي (PDPL).</p>
           <p className="text-xs text-gray-400 mt-4 max-w-lg mx-auto">
             هذه النتائج هي مخرجات استرشادية لمساعدتك على فهم وضعك وتنظيم خطواتك، ولا تعد استشارة قانونية.
           </p>
         </div>
+      </motion.div>
 
-        {/* 2. Top 3 Gaps Section */}
-        <div className="p-10 bg-gray-50/50">
-          <h3 className="text-lg font-black text-gray-900 mb-8 flex items-center justify-end gap-2 text-right">
-            أبرز الفجوات المكتشفة
-            <AlertCircle className="text-red-500" size={20} />
-          </h3>
-          <div className="grid md:grid-cols-3 gap-6">
-            {gaps.map((gap, idx) => (
-              <div key={idx} className="bg-white p-6 rounded-3xl border border-red-100 shadow-sm text-right relative overflow-hidden flex flex-col h-full">
-                <div className="absolute top-0 right-0 w-1 h-full bg-red-400 opacity-20" />
-                <div className="flex items-center justify-end gap-2 mb-2">
-                   <h4 className="font-bold text-gray-900">{gap.category}</h4>
-                   {answers[gap.id] === "unknown" && <HelpCircle size={14} className="text-amber-500" />}
-                </div>
-                <p className="text-xs text-gray-600 leading-relaxed mb-4 flex-1">
-                  {gap.explanation}
-                </p>
-                <div className="pt-4 border-t border-gray-50 text-[10px] font-bold text-primary">
-                   إجراء مقترح: {gap.action}
-                </div>
+      {/* 2. Interpretation Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="bg-white rounded-[32px] border border-gray-100 shadow-sm p-8 md:p-10 mb-8 text-right"
+      >
+        <h3 className="text-xl font-black text-gray-900 mb-4 flex items-center justify-end gap-2">
+          ماذا تعني نتيجتك؟
+          <TrendingUp className="text-primary" size={22} />
+        </h3>
+        <p className="text-gray-700 leading-relaxed font-body">
+          {status.message}
+        </p>
+      </motion.div>
+
+      {/* 3. Top 3 Gaps Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="mb-8"
+      >
+        <h3 className="text-xl font-black text-gray-900 mb-6 flex items-center justify-end gap-2 text-right">
+          أهم الفجوات التي تحتاج انتباهك
+          <AlertCircle className="text-red-500" size={22} />
+        </h3>
+        <div className="grid md:grid-cols-3 gap-6">
+          {gaps.map((gap, idx) => (
+            <div key={idx} className="bg-white p-6 rounded-3xl border border-red-100 shadow-sm text-right relative overflow-hidden flex flex-col h-full">
+              <div className="absolute top-0 right-0 w-1 h-full bg-red-400 opacity-20" />
+              <div className="flex items-center justify-end gap-2 mb-2">
+                 <h4 className="font-bold text-gray-900">{gap.category}</h4>
+                 {answers[gap.id] === "unknown" && <HelpCircle size={14} className="text-amber-500" />}
               </div>
-            ))}
-          </div>
+              <p className="text-xs text-gray-600 leading-relaxed mb-4 flex-1">
+                {gap.explanation}
+              </p>
+              <div className="pt-4 border-t border-gray-50 text-[10px] font-bold text-primary">
+                 إجراء مقترح: {gap.action}
+              </div>
+            </div>
+          ))}
         </div>
       </motion.div>
 
-      {/* 3. Pricing Logic */}
+      {/* 4. Impact Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="bg-amber-50/50 rounded-[32px] border border-amber-100 p-8 md:p-10 mb-8 text-right"
+      >
+        <h3 className="text-xl font-black text-gray-900 mb-4 flex items-center justify-end gap-2">
+          لماذا هذا مهم؟
+          <AlertCircle className="text-amber-500" size={22} />
+        </h3>
+        <p className="text-gray-700 leading-relaxed font-body">
+          هذه الفجوات قد تعني أن جمع بيانات العملاء أو استخدامها أو عرض سياسة الخصوصية غير منظم بالشكل الكافي. الهدف الآن ليس التعقيد، بل ترتيب الأولويات والبدء بخطوات واضحة.
+        </p>
+      </motion.div>
+
+      {/* 5. Solution Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.35 }}
+        className="bg-white rounded-[32px] border border-gray-100 shadow-sm p-8 md:p-10 mb-8 text-right"
+      >
+        <h3 className="text-xl font-black text-gray-900 mb-6 flex items-center justify-end gap-2">
+          الحل المقترح: خطة تنفيذ خلال 14 يوم
+          <Target className="text-primary" size={22} />
+        </h3>
+        <ul className="space-y-4 font-body">
+          {[
+            "ترتيب الفجوات حسب الأولوية",
+            "تجهيز إشعار خصوصية قابل للتعديل",
+            "توضيح طريقة التعامل مع بيانات العملاء",
+            "خطوات عملية تساعدك تبدأ التنظيم بدون تعقيد",
+          ].map((item, i) => (
+            <li key={i} className="flex items-center justify-end gap-3 text-sm text-gray-700">
+              {item}
+              <CheckCircle2 size={16} className="text-primary shrink-0" />
+            </li>
+          ))}
+        </ul>
+      </motion.div>
+
+      {/* 6. CTA Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
+        className="text-center mb-10 py-8"
+      >
+        <h3 className="text-2xl font-black text-gray-900 mb-3">
+          جاهز تبدأ تنظيم حماية البيانات؟
+        </h3>
+        <p className="text-gray-500 font-body text-sm max-w-md mx-auto">
+          اختر الباقة المناسبة، وسيتم التفعيل التجريبي عبر التواصل المباشر.
+        </p>
+        <div className="mt-6 flex justify-center">
+          <div className="w-12 h-1 bg-primary/20 rounded-full" />
+        </div>
+      </motion.div>
+
+      {/* 7. Package Cards */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.45 }}
         className="mb-12"
       >
-        <h3 className="text-2xl font-black text-gray-900 mb-2 text-center">فعّل مخرجاتك الآن</h3>
-        <p className="text-gray-500 text-center mb-10 font-body text-sm">اختر الباقة المناسبة للبدء في تنظيم نشاطك</p>
-
         <div className="grid md:grid-cols-3 gap-6">
           {plans.map((plan, idx) => (
             <div
@@ -234,7 +312,7 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
               )}
             >
               {plan.badge && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-secondary text-white font-black text-xs rounded-full shadow-lg flex items-center gap-1">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-primary text-white font-black text-xs rounded-full shadow-lg flex items-center gap-1">
                   <Star size={10} />
                   {plan.badge}
                 </div>
@@ -276,7 +354,7 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
         </p>
       </motion.div>
 
-      {/* 4. Secondary CTA */}
+      {/* Secondary CTA */}
       <div className="text-center">
         <button 
           onClick={onNavigateDocs}

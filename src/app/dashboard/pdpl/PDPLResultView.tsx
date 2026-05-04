@@ -10,7 +10,8 @@ import {
   TrendingUp,
   Star,
   HelpCircle,
-  Target
+  Target,
+  Lock
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { pdplQuestions } from "./content";
@@ -293,6 +294,83 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
         </ul>
       </motion.div>
 
+      {/* 5.5 Output Preview Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.38 }}
+        className="mb-16 mt-8"
+      >
+        <h3 className="text-2xl font-black text-gray-900 mb-2 text-center">معاينة من المخرجات</h3>
+        <p className="text-gray-500 text-center mb-8 font-body text-sm max-w-lg mx-auto leading-relaxed">
+          هذه عينة مختصرة من المخرجات التي تساعدك على الانتقال من معرفة الفجوات إلى بدء التنظيم العملي.
+        </p>
+
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          {/* Preview 1: Privacy Notice */}
+          <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm text-right flex flex-col">
+            <h4 className="font-bold text-gray-900 mb-3 flex items-center justify-end gap-2">
+              إشعار خصوصية قابل للتعديل
+              <CheckCircle2 size={16} className="text-primary" />
+            </h4>
+            <p className="text-sm text-gray-600 leading-relaxed font-body bg-gray-50 p-4 rounded-2xl border border-gray-100">
+              "نستخدم بيانات العملاء لغرض معالجة الطلبات، التواصل بخصوص الخدمة، وتحسين تجربة المستخدم، مع الالتزام بتنظيم الوصول إلى البيانات وعدم استخدامها خارج الأغراض المحددة."
+            </p>
+          </div>
+
+          {/* Preview 2: 14-day Plan */}
+          <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm text-right flex flex-col">
+            <h4 className="font-bold text-gray-900 mb-3 flex items-center justify-end gap-2">
+              خطة تنفيذ 14 يوم
+              <CheckCircle2 size={16} className="text-primary" />
+            </h4>
+            <ul className="space-y-2 text-sm text-gray-600 font-body bg-gray-50 p-4 rounded-2xl border border-gray-100 list-inside text-right" dir="rtl">
+              <li>اليوم 1-2: مراجعة البيانات التي يتم جمعها من العملاء</li>
+              <li>اليوم 3-5: ترتيب سياسة الخصوصية وإشعارات الاستخدام</li>
+              <li>اليوم 6-10: تحديد الفجوات ذات الأولوية</li>
+              <li>اليوم 11-14: تجهيز خطوات العمل والمتابعة</li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Blurred/Locked Area */}
+        <div className="grid grid-cols-2 gap-4 relative">
+          <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+             <div className="bg-white/90 backdrop-blur-md px-6 py-3 rounded-full font-bold text-primary shadow-xl flex items-center gap-2 border border-gray-100">
+               <Lock size={16} />
+               المزيد من المخرجات التشغيلية متوفرة في الباقات
+             </div>
+          </div>
+
+          {[
+            "خارطة التعامل مع البيانات",
+            "تحليل الفجوات حسب الأولوية",
+            "صيغ التنبيه والموافقة",
+            "قائمة مشاركة البيانات مع الأطراف الخارجية"
+          ].map((item, idx) => (
+            <div key={idx} className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm text-center blur-[3px] select-none pointer-events-none opacity-60">
+               <div className="w-8 h-8 bg-gray-50 rounded-full mx-auto mb-2 flex items-center justify-center">
+                 <Lock size={14} className="text-gray-400" />
+               </div>
+               <span className="text-xs font-bold text-gray-500">{item}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Preview CTA */}
+        <div className="text-center mt-10">
+           <p className="text-sm font-bold text-gray-600 mb-4 font-body">
+             للحصول على المخرجات القابلة للتعديل، اختر الباقة المناسبة وابدأ التفعيل التجريبي.
+           </p>
+           <button 
+             onClick={() => document.getElementById('packages')?.scrollIntoView({ behavior: 'smooth' })}
+             className="px-8 py-3 bg-gray-900 text-white hover:bg-gray-800 rounded-2xl font-black text-sm transition-all shadow-lg hover:shadow-xl"
+           >
+             اختر الباقة المناسبة
+           </button>
+        </div>
+      </motion.div>
+
       {/* 6. CTA Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -313,10 +391,11 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
 
       {/* 7. Package Cards */}
       <motion.div
+        id="packages"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.45 }}
-        className="mb-12"
+        className="mb-12 scroll-mt-8"
       >
         <div className="grid md:grid-cols-3 gap-6">
           {plans.map((plan, idx) => (

@@ -11,7 +11,8 @@ import {
   Star,
   HelpCircle,
   Target,
-  Lock
+  Lock,
+  MessageSquare
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { pdplQuestions } from "./content";
@@ -46,13 +47,13 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
 
   const status = getStatusLabel();
 
-  const [selectedPlan, setSelectedPlan] = useState<{name: string, price: string} | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<{name: string, price: string, whatsappMessage: string} | null>(null);
 
   const plans = [
     {
       name: "تشخيص الجاهزية",
       price: "149",
-      desc: "لمعرفة وضعك الحالي وأبرز الفجوات",
+      desc: "لمعرفة وضعك الحالي وأبرز فجوات",
       features: [
         "نتيجة الجاهزية التفصيلية",
         "أهم الفجوات المكتشفة",
@@ -61,7 +62,8 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
       ],
       highlight: false,
       badge: null,
-      cta: "اطلب تفعيل التشخيص"
+      cta: "اطلب تفعيل التشخيص",
+      whatsappMessage: "أبغى أطلب تفعيل تشخيص الجاهزية 149 ريال لمنصة الامتثال الذكي"
     },
     {
       name: "بدء التطبيق",
@@ -77,7 +79,8 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
       ],
       highlight: true,
       badge: "موصى بها",
-      cta: "ابدأ تنفيذ خطة الـ 14 يوم"
+      cta: "ابدأ تنفيذ خطة الـ 14 يوم",
+      whatsappMessage: "أبغى أبدأ حزمة 299 لتنظيم حماية البيانات وخطة تنفيذ 14 يوم"
     },
     {
       name: "حزمة البداية الكاملة",
@@ -91,33 +94,26 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
       ],
       highlight: false,
       badge: null,
-      cta: "اطلب الحزمة التشغيلية"
+      cta: "اطلب الحزمة التشغيلية",
+      whatsappMessage: "أبغى أطلب الحزمة التشغيلية 499 لمنصة الامتثال الذكي"
     },
   ];
 
   const handleWhatsAppClick = () => {
-    // TODO: move WhatsApp phone number to environment variable.
-    const phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
+    const phoneNumber = process.env.NEXT_PUBLIC_SUPPORT_WHATSAPP || process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
     if (!phoneNumber) {
-      alert("رقم الواتساب غير متوفر حالياً. الرجاء المحاولة لاحقاً.");
+      alert("رقم التواصل غير متاح حاليًا. يرجى المحاولة لاحقًا.");
       return;
     }
     
-    let message = "";
-    if (selectedPlan?.price === "149") {
-       message = "أبغى أطلب تفعيل تشخيص الجاهزية 149 ريال لمنصة الامتثال الذكي";
-    } else if (selectedPlan?.price === "299") {
-       message = "أبغى أبدأ حزمة 299 لتنظيم حماية البيانات وخطة تنفيذ 14 يوم";
-    } else if (selectedPlan?.price === "499") {
-       message = "أبغى أطلب الحزمة التشغيلية 499 لمنصة الامتثال الذكي";
-    }
+    if (!selectedPlan) return;
 
-    const encodedMessage = encodeURIComponent(message);
+    const encodedMessage = encodeURIComponent(selectedPlan.whatsappMessage);
     
     trackConversionEvent({
       eventName: "whatsapp_click",
-      packageId: selectedPlan?.price,
-      packageName: selectedPlan?.name,
+      packageId: selectedPlan.price,
+      packageName: selectedPlan.name,
       entityType: entityType,
       path: window.location.pathname
     });
@@ -156,7 +152,7 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
               </div>
               
               <p className="font-bold text-gray-700 bg-gray-50 py-3 px-4 rounded-xl mb-8 border border-gray-100">
-                التفعيل التجريبي يتم عبر التواصل المباشر
+                التفعيل التجريبي يتم عبر التواصل المباشر عبر واتساب
               </p>
 
               <div className="flex flex-col gap-3">
@@ -164,6 +160,7 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
                   onClick={handleWhatsAppClick}
                   className="w-full py-4 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-2xl font-black transition-colors flex items-center justify-center gap-2 shadow-lg shadow-[#25D366]/20"
                 >
+                  <MessageSquare size={20} />
                   تواصل عبر واتساب
                 </button>
                 <button 
@@ -439,7 +436,7 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
                     entityType: entityType,
                     path: window.location.pathname
                   });
-                  setSelectedPlan({ name: plan.name, price: plan.price });
+                  setSelectedPlan({ name: plan.name, price: plan.price, whatsappMessage: plan.whatsappMessage });
                 }}
                 className={cn(
                   "w-full py-3 rounded-2xl font-black text-sm transition-all",

@@ -14,6 +14,7 @@ import {
 import { cn } from "@/lib/utils";
 import { pdplQuestions } from "./content";
 import { EntityType } from "@prisma/client";
+import { MessageSquare } from "lucide-react";
 
 interface Props {
   score: number;
@@ -36,6 +37,9 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
   const status = getStatusLabel();
 
   const [showNotification, setShowNotification] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState<{ name: string; price: string; message: string } | null>(null);
+
+  const SUPPORT_PHONE = process.env.NEXT_PUBLIC_SUPPORT_WHATSAPP;
 
   const plans = [
     {
@@ -50,7 +54,8 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
       ],
       highlight: false,
       badge: null,
-      cta: "اطلب تفعيل التشخيص"
+      cta: "اطلب تفعيل التشخيص",
+      whatsappMessage: "أبغى أطلب تفعيل تشخيص الجاهزية 149 ريال لمنصة الامتثال الذكي"
     },
     {
       name: "بدء التطبيق",
@@ -66,7 +71,8 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
       ],
       highlight: true,
       badge: "الأكثر طلبًا",
-      cta: "ابدأ تنفيذ خطة الـ 14 يوم"
+      cta: "ابدأ تنفيذ خطة الـ 14 يوم",
+      whatsappMessage: "أبغى أبدأ حزمة 299 لتنظيم حماية البيانات وخطة تنفيذ 14 يوم"
     },
     {
       name: "حزمة البداية الكاملة",
@@ -80,9 +86,28 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
       ],
       highlight: false,
       badge: null,
-      cta: "اطلب الحزمة التشغيلية"
+      cta: "اطلب الحزمة التشغيلية",
+      whatsappMessage: "أبغى أطلب الحزمة التشغيلية 499 لمنصة الامتثال الذكي"
     },
   ];
+
+  const handlePackageClick = (plan: typeof plans[0]) => {
+    setSelectedPackage({ name: plan.name, price: plan.price, message: plan.whatsappMessage });
+    setShowNotification(true);
+  };
+
+  const handleWhatsAppRedirect = () => {
+    if (!selectedPackage) return;
+    
+    if (!SUPPORT_PHONE) {
+      alert("رقم التواصل غير متاح حاليًا. يرجى المحاولة لاحقًا.");
+      return;
+    }
+
+    const encodedMessage = encodeURIComponent(selectedPackage.message);
+    const whatsappUrl = `https://wa.me/${SUPPORT_PHONE}?text=${encodedMessage}`;
+    window.open(whatsappUrl, "_blank");
+  };
 
   return (
     <div className="max-w-4xl mx-auto py-12 px-6 relative">
@@ -101,8 +126,17 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
               </div>
               <p className="font-bold text-gray-900 leading-relaxed">
                 سيتم تفعيل الدفع الإلكتروني قريبًا. <br />
-                للتفعيل التجريبي تواصل معنا.
+                للتفعيل التجريبي تواصل معنا عبر واتساب.
               </p>
+              
+              <button 
+                onClick={handleWhatsAppRedirect}
+                className="w-full py-4 bg-[#25D366] text-white font-black rounded-2xl hover:bg-[#128C7E] transition-all flex items-center justify-center gap-2 text-lg shadow-lg shadow-green-200"
+              >
+                تواصل عبر واتساب
+                <MessageSquare size={20} />
+              </button>
+
               <button 
                 onClick={() => setShowNotification(false)}
                 className="mt-2 text-sm font-bold text-gray-400 hover:text-gray-600 transition-colors"
@@ -212,7 +246,7 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
               </ul>
 
               <button
-                onClick={() => setShowNotification(true)}
+                onClick={() => handlePackageClick(plan)}
                 className={cn(
                   "w-full py-3 rounded-2xl font-black text-sm transition-all",
                   plan.highlight

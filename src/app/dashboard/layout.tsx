@@ -68,6 +68,7 @@ export default async function DashboardLayout({
       <Sidebar 
         userEmail={user.email!} 
         isNGO={isNGO} 
+        orgName={dbUser?.organization?.name}
         signOutAction={signOut} 
       />
 

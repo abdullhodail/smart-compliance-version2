@@ -308,33 +308,45 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
 
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           {/* Preview 1: Privacy Notice */}
-          <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm text-right flex flex-col">
-            <h4 className="font-bold text-gray-900 mb-3 flex items-center justify-end gap-2">
+          <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm text-right flex flex-col" dir="rtl">
+            <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+              <CheckCircle2 size={16} className="text-primary shrink-0" />
               إشعار خصوصية قابل للتعديل
-              <CheckCircle2 size={16} className="text-primary" />
             </h4>
-            <p className="text-sm text-gray-600 leading-relaxed font-body bg-gray-50 p-4 rounded-2xl border border-gray-100">
+            <p className="text-sm text-gray-600 leading-relaxed font-body bg-gray-50 p-4 rounded-2xl border border-gray-100 text-right">
               "نستخدم بيانات العملاء لغرض معالجة الطلبات، التواصل بخصوص الخدمة، وتحسين تجربة المستخدم، مع الالتزام بتنظيم الوصول إلى البيانات وعدم استخدامها خارج الأغراض المحددة."
             </p>
           </div>
 
           {/* Preview 2: 14-day Plan */}
-          <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm text-right flex flex-col">
-            <h4 className="font-bold text-gray-900 mb-3 flex items-center justify-end gap-2">
+          <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm text-right flex flex-col" dir="rtl">
+            <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+              <CheckCircle2 size={16} className="text-primary shrink-0" />
               خطة تنفيذ 14 يوم
-              <CheckCircle2 size={16} className="text-primary" />
             </h4>
-            <ul className="space-y-2 text-sm text-gray-600 font-body bg-gray-50 p-4 rounded-2xl border border-gray-100 list-inside text-right" dir="rtl">
-              <li>اليوم 1-2: مراجعة البيانات التي يتم جمعها من العملاء</li>
-              <li>اليوم 3-5: ترتيب سياسة الخصوصية وإشعارات الاستخدام</li>
-              <li>اليوم 6-10: تحديد الفجوات ذات الأولوية</li>
-              <li>اليوم 11-14: تجهيز خطوات العمل والمتابعة</li>
+            <ul className="space-y-3 text-sm text-gray-600 font-body bg-gray-50 p-4 rounded-2xl border border-gray-100 list-none">
+              <li className="flex items-start gap-2">
+                 <span className="text-primary font-black min-w-[60px] shrink-0">يوم 1-2:</span>
+                 <span>مراجعة البيانات التي يتم جمعها من العملاء</span>
+              </li>
+              <li className="flex items-start gap-2">
+                 <span className="text-primary font-black min-w-[60px] shrink-0">يوم 3-5:</span>
+                 <span>ترتيب سياسة الخصوصية وإشعارات الاستخدام</span>
+              </li>
+              <li className="flex items-start gap-2">
+                 <span className="text-primary font-black min-w-[60px] shrink-0">يوم 6-10:</span>
+                 <span>تحديد الفجوات ذات الأولوية</span>
+              </li>
+              <li className="flex items-start gap-2">
+                 <span className="text-primary font-black min-w-[60px] shrink-0">يوم 11-14:</span>
+                 <span>تجهيز خطوات العمل والمتابعة</span>
+              </li>
             </ul>
           </div>
         </div>
 
         {/* Blurred/Locked Area */}
-        <div className="grid grid-cols-2 gap-4 relative">
+        <div className="grid grid-cols-2 gap-4 relative" dir="rtl">
           <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
              <div className="bg-white/90 backdrop-blur-md px-6 py-3 rounded-full font-bold text-primary shadow-xl flex items-center gap-2 border border-gray-100">
                <Lock size={16} />
@@ -348,11 +360,11 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
             "صيغ التنبيه والموافقة",
             "قائمة مشاركة البيانات مع الأطراف الخارجية"
           ].map((item, idx) => (
-            <div key={idx} className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm text-center blur-[3px] select-none pointer-events-none opacity-60">
-               <div className="w-8 h-8 bg-gray-50 rounded-full mx-auto mb-2 flex items-center justify-center">
-                 <Lock size={14} className="text-gray-400" />
+            <div key={idx} className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm text-right blur-[3px] select-none pointer-events-none opacity-60 flex items-center gap-2">
+               <div className="w-6 h-6 bg-gray-50 rounded-full flex items-center justify-center shrink-0">
+                 <Lock size={12} className="text-gray-400" />
                </div>
-               <span className="text-xs font-bold text-gray-500">{item}</span>
+               <span className="text-xs font-bold text-gray-500 truncate">{item}</span>
             </div>
           ))}
         </div>

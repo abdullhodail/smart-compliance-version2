@@ -9,12 +9,12 @@ import {
   LogOut, 
   UserCircle
 } from "lucide-react";
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface SidebarProps {
   userEmail: string;
   isNGO: boolean;
+  orgName?: string;
   signOutAction: (formData: FormData) => void;
 }
 
@@ -31,7 +31,7 @@ interface SidebarSection {
   links: SidebarLink[];
 }
 
-export default function Sidebar({ userEmail, isNGO, signOutAction }: SidebarProps) {
+export default function Sidebar({ userEmail, isNGO, orgName, signOutAction }: SidebarProps) {
   const pathname = usePathname();
 
   const sections: SidebarSection[] = [
@@ -62,7 +62,7 @@ export default function Sidebar({ userEmail, isNGO, signOutAction }: SidebarProp
   ];
 
   return (
-    <aside className="w-72 bg-white border-l border-gray-200 hidden md:flex flex-col h-screen sticky top-0" dir="rtl">
+    <aside className="w-72 bg-white border-l border-gray-200 hidden md:flex flex-col h-screen sticky top-0 shadow-sm" dir="rtl">
       {/* Logo Area */}
       <div className="p-8 border-b border-gray-50 shrink-0">
         <Link href="/" className="flex items-center gap-3 group">
@@ -95,7 +95,7 @@ export default function Sidebar({ userEmail, isNGO, signOutAction }: SidebarProp
                       className={cn(
                         "flex items-center gap-3 px-4 h-[52px] rounded-2xl transition-all group relative",
                         isActive 
-                          ? "bg-primary text-white shadow-lg shadow-primary/20" 
+                          ? "bg-primary text-white shadow-md shadow-primary/20" 
                           : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
                       )}
                     >
@@ -119,11 +119,7 @@ export default function Sidebar({ userEmail, isNGO, signOutAction }: SidebarProp
                       </div>
 
                       {isActive && (
-                        <motion.div 
-                          layoutId="activeIndicator"
-                          className="absolute -right-2 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-primary rounded-l-full shadow-sm"
-                          initial={false}
-                        />
+                        <div className="absolute -right-2 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-l-full shadow-sm" />
                       )}
                     </Link>
                   );
@@ -142,7 +138,9 @@ export default function Sidebar({ userEmail, isNGO, signOutAction }: SidebarProp
                 <UserCircle size={24} />
              </div>
              <div className="flex flex-col min-w-0">
-                <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-0.5">الحساب</span>
+                <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-0.5 truncate">
+                  {orgName || "الحساب"}
+                </span>
                 <span className="text-[13px] font-bold text-gray-700 truncate">{userEmail}</span>
              </div>
           </div>

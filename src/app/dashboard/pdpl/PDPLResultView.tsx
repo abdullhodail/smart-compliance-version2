@@ -151,8 +151,11 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
                 {selectedPlan.price} <span className="text-sm text-gray-400">ريال</span>
               </div>
               
-              <p className="font-bold text-gray-700 bg-gray-50 py-3 px-4 rounded-xl mb-8 border border-gray-100">
-                التفعيل التجريبي يتم عبر التواصل المباشر عبر واتساب
+              <p className="font-bold text-gray-700 bg-gray-50 py-3 px-4 rounded-xl mb-4 border border-gray-100">
+                التفعيل يتم يدوياً عبر التواصل المباشر.
+              </p>
+              <p className="text-xs text-gray-500 mb-8 leading-relaxed">
+                بعد تأكيد الطلب والدفع، سيتم تفعيل المخرجات والوثائق الخاصة بالباقة المختارة (149، 299، أو 499) لتظهر لك كاملة وقابلة للتحميل.
               </p>
 
               <div className="flex flex-col gap-3">

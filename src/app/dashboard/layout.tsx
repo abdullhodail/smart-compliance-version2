@@ -79,14 +79,12 @@ export default async function DashboardLayout({
               <Image src="/logo.svg" alt="logo" width={24} height={24} />
               <span className="font-bold text-primary">الامتثال الذكي</span>
            </div>
-           <div className="hidden md:block">
-              <h1 className="text-gray-500 font-medium">لوحة التحكم</h1>
-           </div>
-           <div className="flex items-center gap-4">
-              <button className="p-2 text-gray-400 hover:text-gray-600">
-                 <Settings size={20} />
-              </button>
-           </div>
+            <div className="hidden md:block">
+               <h1 className="text-gray-900 font-black">لوحة التحكم</h1>
+            </div>
+            <div className="flex items-center gap-4">
+               {/* Settings or other future actions can go here */}
+            </div>
         </header>
 
         <main className="flex-1 overflow-y-auto p-8">

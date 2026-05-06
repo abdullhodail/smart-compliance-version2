@@ -7,9 +7,9 @@ import {
   LayoutDashboard, 
   ShieldCheck, 
   LogOut, 
-  UserCircle,
-  ChevronLeft
+  UserCircle
 } from "lucide-react";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface SidebarProps {
@@ -63,21 +63,25 @@ export default function Sidebar({ userEmail, isNGO, signOutAction }: SidebarProp
 
   return (
     <aside className="w-72 bg-white border-l border-gray-200 hidden md:flex flex-col h-screen sticky top-0" dir="rtl">
-      {/* Logo */}
-      <Link href="/" className="p-8 flex items-center gap-3 border-b border-gray-50 hover:bg-gray-50 transition-colors shrink-0">
-        <Image src="/logo.svg" alt="logo" width={36} height={36} />
-        <span className="text-xl font-black text-primary">الامتثال الذكي</span>
-      </Link>
+      {/* Logo Area */}
+      <div className="p-8 border-b border-gray-50 shrink-0">
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="w-10 h-10 bg-primary/5 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+            <Image src="/logo.svg" alt="logo" width={28} height={28} />
+          </div>
+          <span className="text-xl font-black text-primary tracking-tight">الامتثال الذكي</span>
+        </Link>
+      </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 p-6 space-y-8 overflow-y-auto">
+      {/* Navigation Area */}
+      <nav className="flex-1 p-6 space-y-8 overflow-y-auto custom-scrollbar">
         {sections.map((section) => {
           const visibleLinks = section.links.filter(link => link.visible !== false);
           if (visibleLinks.length === 0) return null;
 
           return (
-            <div key={section.title} className="space-y-3">
-              <h3 className="px-4 text-[11px] font-black text-gray-400 uppercase tracking-widest">
+            <div key={section.title} className="space-y-4">
+              <h3 className="px-4 text-[11px] font-black text-gray-400 uppercase tracking-[0.2em]">
                 {section.title}
               </h3>
               <div className="space-y-1">
@@ -89,27 +93,37 @@ export default function Sidebar({ userEmail, isNGO, signOutAction }: SidebarProp
                       key={link.name}
                       href={link.href}
                       className={cn(
-                        "flex items-center justify-between px-4 h-[48px] rounded-2xl transition-all group relative",
+                        "flex items-center gap-3 px-4 h-[52px] rounded-2xl transition-all group relative",
                         isActive 
-                          ? "bg-primary/5 text-primary shadow-sm" 
+                          ? "bg-primary text-white shadow-lg shadow-primary/20" 
                           : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
                       )}
                     >
-                      <div className="flex items-center gap-3">
-                        <link.icon size={22} className={cn("transition-colors", isActive ? "text-primary" : "text-gray-400 group-hover:text-gray-600")} />
-                        <span className={cn("text-[15px] transition-all", isActive ? "font-black" : "font-bold")}>
+                      <link.icon size={22} className={cn("shrink-0 transition-colors", isActive ? "text-white" : "text-gray-400 group-hover:text-primary")} />
+                      
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <span className={cn("text-[15px] truncate transition-all", isActive ? "font-black" : "font-bold")}>
                           {link.name}
                         </span>
+                        
+                        {link.badge && (
+                          <span className={cn(
+                            "text-[9px] px-1.5 py-0.5 rounded-md font-black shrink-0",
+                            isActive 
+                              ? "bg-white/20 text-white" 
+                              : "bg-amber-100 text-amber-700"
+                          )}>
+                            {link.badge}
+                          </span>
+                        )}
                       </div>
-                      
-                      {link.badge && (
-                        <span className="text-[10px] px-2 py-0.5 bg-amber-50 text-amber-600 border border-amber-100 rounded-md font-black">
-                          {link.badge}
-                        </span>
-                      )}
 
                       {isActive && (
-                        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-l-full" />
+                        <motion.div 
+                          layoutId="activeIndicator"
+                          className="absolute -right-2 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-primary rounded-l-full shadow-sm"
+                          initial={false}
+                        />
                       )}
                     </Link>
                   );
@@ -120,28 +134,27 @@ export default function Sidebar({ userEmail, isNGO, signOutAction }: SidebarProp
         })}
       </nav>
 
-      {/* Footer / User Info */}
-      <div className="p-6 border-t border-gray-50 space-y-3 shrink-0">
-        <div className="px-4 py-3 bg-gray-50 rounded-2xl flex items-center gap-3 text-gray-600 border border-gray-100">
-          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-            <UserCircle size={20} />
-          </div>
-          <div className="flex flex-col min-w-0">
-            <span className="text-[10px] font-black text-gray-400 uppercase leading-none mb-1">المستخدم</span>
-            <span className="text-xs font-bold truncate leading-none">{userEmail}</span>
+      {/* Footer Area - Redesigned */}
+      <div className="p-6 bg-gray-50/50 border-t border-gray-100 shrink-0">
+        <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm mb-4">
+          <div className="flex items-center gap-3">
+             <div className="w-10 h-10 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400">
+                <UserCircle size={24} />
+             </div>
+             <div className="flex flex-col min-w-0">
+                <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-0.5">الحساب</span>
+                <span className="text-[13px] font-bold text-gray-700 truncate">{userEmail}</span>
+             </div>
           </div>
         </div>
         
         <form action={signOutAction}>
           <button
             type="submit"
-            className="w-full flex items-center justify-between px-4 h-[44px] text-red-500 hover:bg-red-50 rounded-xl transition-all group"
+            className="w-full h-[48px] bg-white hover:bg-red-50 text-red-500 border border-red-100 rounded-2xl font-black text-sm transition-all flex items-center justify-center gap-2 shadow-sm active:scale-[0.98]"
           >
-            <div className="flex items-center gap-3">
-              <LogOut size={20} className="group-hover:translate-x-1 transition-transform" />
-              <span className="text-sm font-bold">تسجيل الخروج</span>
-            </div>
-            <ChevronLeft size={16} className="opacity-0 group-hover:opacity-100 transition-all" />
+            <LogOut size={18} />
+            تسجيل الخروج
           </button>
         </form>
       </div>

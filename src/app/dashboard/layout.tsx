@@ -2,9 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
-import { LayoutDashboard, ShieldCheck, LogOut, Settings, UserCircle } from "lucide-react";
+import { Settings } from "lucide-react";
 import { signOut } from "@/app/(auth)/actions";
 import prisma from "@/lib/prisma";
+import Sidebar from "./Sidebar";
 
 export default async function DashboardLayout({
   children,
@@ -61,50 +62,14 @@ export default async function DashboardLayout({
 
   const isNGO = dbUser?.organization?.entityType === "NGO";
 
-  const sidebarLinks = [
-    { name: "نظرة عامة", href: "/dashboard", icon: LayoutDashboard },
-    ...(isNGO ? [{ name: "الحوكمة", href: "/dashboard/governance-lite", icon: LayoutDashboard }] : []),
-    { name: "حماية البيانات", href: "/dashboard/pdpl", icon: ShieldCheck },
-  ];
-
   return (
     <div className="min-h-screen bg-gray-50 flex" dir="rtl">
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-l border-gray-200 hidden md:flex flex-col">
-        <Link href="/" className="p-6 flex items-center gap-3 border-b border-gray-50 hover:bg-gray-50 transition-colors" title="العودة للصفحة الرئيسية">
-          <Image src="/logo.svg" alt="logo" width={32} height={32} />
-          <span className="text-xl font-bold text-primary">الامتثال الذكي</span>
-        </Link>
-
-        <nav className="flex-1 p-4 space-y-1">
-          {sidebarLinks.map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              className="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-primary/5 hover:text-primary rounded-xl transition-all"
-            >
-              <link.icon size={20} />
-              <span className="font-medium">{link.name}</span>
-            </Link>
-          ))}
-        </nav>
-
-        <div className="p-4 border-t border-gray-50 space-y-1">
-           <div className="px-4 py-3 flex items-center gap-3 text-gray-400 text-sm">
-              <UserCircle size={20} />
-              <span className="truncate">{user.email}</span>
-           </div>
-          <form action={signOut}>
-            <button
-              type="submit"
-              className="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl transition-all"
-            >
-              <LogOut size={20} />
-              <span className="font-medium">تسجيل الخروج</span>
-            </button>
-          </form>
-        </div>
-      </aside>
+      <Sidebar 
+        userEmail={user.email!} 
+        isNGO={isNGO} 
+        signOutAction={signOut} 
+      />
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">

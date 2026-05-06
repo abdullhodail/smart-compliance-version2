@@ -1,23 +1,22 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { 
   CheckCircle2, 
   AlertCircle, 
   ArrowRight,
-  ShieldCheck,
   TrendingUp,
   Star,
   HelpCircle,
   Target,
   Lock,
-  MessageSquare
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { pdplQuestions } from "./content";
 import { EntityType } from "@prisma/client";
 import { trackConversionEvent } from "@/app/actions/tracking";
+import PackageActivationRequestModal from "./PackageActivationRequestModal";
 
 interface Props {
   score: number;
@@ -47,7 +46,7 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
 
   const status = getStatusLabel();
 
-  const [selectedPlan, setSelectedPlan] = useState<{name: string, price: string, whatsappMessage: string} | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<{name: string, price: string} | null>(null);
 
   const plans = [
     {
@@ -62,11 +61,10 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
       ],
       highlight: false,
       badge: null,
-      cta: "اطلب تفعيل التشخيص",
-      whatsappMessage: "أبغى أطلب تفعيل تشخيص الجاهزية 149 ريال لمنصة الامتثال الذكي"
+      cta: "اطلب تفعيل التشخيص"
     },
     {
-      name: "بدء التطبيق",
+      name: "حزمة بداية التطبيق",
       price: "299",
       desc: "خطة تنفيذ 14 يوم مع مخرجات جاهزة للاستخدام",
       features: [
@@ -79,11 +77,10 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
       ],
       highlight: true,
       badge: "موصى بها",
-      cta: "ابدأ تنفيذ خطة الـ 14 يوم",
-      whatsappMessage: "أبغى أبدأ حزمة 299 لتنظيم حماية البيانات وخطة تنفيذ 14 يوم"
+      cta: "ابدأ تنفيذ خطة الـ 14 يوم"
     },
     {
-      name: "حزمة البداية الكاملة",
+      name: "الحزمة التشغيلية الكاملة",
       price: "499",
       desc: "مخرجات تشغيلية شاملة لملف بداية متكامل",
       features: [
@@ -94,89 +91,21 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
       ],
       highlight: false,
       badge: null,
-      cta: "اطلب الحزمة التشغيلية",
-      whatsappMessage: "أبغى أطلب الحزمة التشغيلية 499 لمنصة الامتثال الذكي"
+      cta: "اطلب الحزمة التشغيلية"
     },
   ];
 
-  const handleWhatsAppClick = () => {
-    const phoneNumber = process.env.NEXT_PUBLIC_SUPPORT_WHATSAPP || process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
-    if (!phoneNumber) {
-      alert("رقم التواصل غير متاح حاليًا. يرجى المحاولة لاحقًا.");
-      return;
-    }
-    
-    if (!selectedPlan) return;
 
-    const encodedMessage = encodeURIComponent(selectedPlan.whatsappMessage);
-    
-    trackConversionEvent({
-      eventName: "whatsapp_click",
-      packageId: selectedPlan.price,
-      packageName: selectedPlan.name,
-      entityType: entityType,
-      path: window.location.pathname
-    });
-
-    window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
-  };
 
   return (
     <div className="max-w-4xl mx-auto py-12 px-6 relative">
       {/* Activation Modal */}
-      <AnimatePresence>
-        {selectedPlan && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
-            onClick={() => setSelectedPlan(null)}
-          >
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-sm bg-white rounded-3xl shadow-2xl p-8 text-center border border-gray-100"
-            >
-              <div className="w-16 h-16 bg-primary/5 rounded-full flex items-center justify-center text-primary mx-auto mb-6">
-                <ShieldCheck size={32} />
-              </div>
-              
-              <h3 className="text-xl font-black text-gray-900 mb-2">
-                {selectedPlan.name}
-              </h3>
-              <div className="text-2xl font-black text-primary mb-6">
-                {selectedPlan.price} <span className="text-sm text-gray-400">ريال</span>
-              </div>
-              
-              <p className="font-bold text-gray-700 bg-gray-50 py-3 px-4 rounded-xl mb-4 border border-gray-100">
-                التفعيل يتم يدوياً عبر التواصل المباشر.
-              </p>
-              <p className="text-xs text-gray-500 mb-8 leading-relaxed">
-                بعد تأكيد الطلب والدفع، سيتم تفعيل المخرجات والوثائق الخاصة بالباقة المختارة (149، 299، أو 499) لتظهر لك كاملة وقابلة للتحميل.
-              </p>
-
-              <div className="flex flex-col gap-3">
-                <button 
-                  onClick={handleWhatsAppClick}
-                  className="w-full py-4 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-2xl font-black transition-colors flex items-center justify-center gap-2 shadow-lg shadow-[#25D366]/20"
-                >
-                  <MessageSquare size={20} />
-                  تواصل عبر واتساب
-                </button>
-                <button 
-                  onClick={() => setSelectedPlan(null)}
-                  className="w-full py-3 text-gray-400 hover:text-gray-600 font-bold transition-colors"
-                >
-                  إلغاء
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <PackageActivationRequestModal
+        selectedPlan={selectedPlan}
+        onClose={() => setSelectedPlan(null)}
+        entityType={entityType}
+        score={score}
+      />
 
       {/* 1. Score Section */}
       <motion.div
@@ -451,7 +380,7 @@ export default function PDPLResultView({ score, answers, entityType, onNavigateD
                     entityType: entityType,
                     path: window.location.pathname
                   });
-                  setSelectedPlan({ name: plan.name, price: plan.price, whatsappMessage: plan.whatsappMessage });
+                  setSelectedPlan({ name: plan.name, price: plan.price });
                 }}
                 className={cn(
                   "w-full py-3 rounded-2xl font-black text-sm transition-all",

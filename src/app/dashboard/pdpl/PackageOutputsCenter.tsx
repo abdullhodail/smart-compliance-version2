@@ -76,9 +76,9 @@ export default function PackageOutputsCenter() {
             <Layout size={16} />
             مركز المخرجات
           </motion.div>
-          <h2 className="text-3xl font-black text-gray-900 mb-4">استكشف مخرجاتك العملية</h2>
+          <h2 className="text-3xl font-black text-gray-900 mb-4">مركز المخرجات</h2>
           <p className="text-gray-500 max-w-2xl mx-auto leading-relaxed font-body text-sm">
-            هذه المخرجات تساعدك على الانتقال من معرفة الفجوات إلى بدء تنظيم حماية البيانات بشكل عملي. تختلف المخرجات المتاحة حسب الباقة المختارة.
+            استكشف المخرجات المتاحة حسب الباقة المختارة، وما يمكن تفعيله بعد تأكيد الطلب.
           </p>
         </div>
 
@@ -117,7 +117,7 @@ export default function PackageOutputsCenter() {
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-50 border border-amber-100 text-amber-700 text-xs font-bold font-body">
             <Bell size={14} />
-            تفعيل المخرجات يتم يدويًا بعد تأكيد الطلب عبر واتساب في هذه المرحلة.
+            المخرجات يتم تفعيلها بعد تأكيد الطلب عبر واتساب، وتختلف حسب الباقة المختارة.
           </div>
         </motion.div>
 
@@ -147,7 +147,7 @@ export default function PackageOutputsCenter() {
                         className={cn(
                           "relative p-6 rounded-3xl border transition-all duration-300 flex flex-col items-end text-right h-full overflow-hidden group",
                           isLocked 
-                            ? "bg-gray-50/50 border-gray-100 opacity-60 grayscale-[0.5]" 
+                            ? "bg-gray-50/50 border-gray-100 opacity-75 grayscale-[0.3]" 
                             : "bg-white border-gray-100 shadow-sm hover:shadow-xl hover:border-primary/20 hover:-translate-y-1"
                         )}
                       >
@@ -161,7 +161,7 @@ export default function PackageOutputsCenter() {
                         <div className="flex items-center justify-between w-full mb-4">
                           <div className={cn(
                             "w-10 h-10 rounded-2xl flex items-center justify-center transition-all",
-                            isLocked ? "bg-gray-200/50 text-gray-400" : "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white"
+                            isLocked ? "bg-gray-200/50 text-gray-500" : "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white"
                           )}>
                             <Icon size={20} />
                           </div>
@@ -173,7 +173,7 @@ export default function PackageOutputsCenter() {
                           ) : (
                             <div className="flex items-center gap-1.5 text-[10px] font-bold text-primary bg-primary/5 px-2 py-1 rounded-lg">
                               <CheckCircle2 size={10} />
-                              متاح للتفعيل
+                              مشمول في الباقة
                             </div>
                           )}
                         </div>
@@ -181,7 +181,7 @@ export default function PackageOutputsCenter() {
                         {/* Title */}
                         <h4 className={cn(
                           "font-black text-sm mb-2 transition-colors",
-                          isLocked ? "text-gray-400" : "text-gray-900 group-hover:text-primary"
+                          isLocked ? "text-gray-500" : "text-gray-900 group-hover:text-primary"
                         )}>
                           {item.title}
                         </h4>
@@ -189,7 +189,7 @@ export default function PackageOutputsCenter() {
                         {/* Description (Static for now to keep UI clean) */}
                         <p className={cn(
                           "text-[11px] font-body leading-relaxed",
-                          isLocked ? "text-gray-300" : "text-gray-500"
+                          isLocked ? "text-gray-400" : "text-gray-500"
                         )}>
                           {isLocked 
                             ? "قم بترقية الباقة للحصول على هذا المخرج القابل للتعديل."
@@ -199,7 +199,7 @@ export default function PackageOutputsCenter() {
 
                         {/* Visual Lock Overlay */}
                         {isLocked && (
-                          <div className="absolute inset-0 bg-white/10 backdrop-blur-[1px] pointer-events-none" />
+                          <div className="absolute inset-0 bg-white/10 pointer-events-none" />
                         )}
                       </motion.div>
                     );

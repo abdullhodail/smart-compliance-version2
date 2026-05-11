@@ -39,32 +39,43 @@ export async function resetDemoJourneyAction() {
 
     const orgId = dbUser.organizationId;
 
-    // 3. Delete related data safely
-    // Order matters to avoid foreign key violations if they existed
-    
-    // Clear Assessment Results
-    await prisma.assessmentResult.deleteMany({
+    // 3. Check for shared organization
+    const userCount = await prisma.user.count({
       where: { organizationId: orgId }
     });
 
-    // Clear Subscriptions
-    await prisma.subscription.deleteMany({
-      where: { organizationId: orgId }
-    });
+    if (userCount > 1) {
+      console.log(`[DemoReset] Org ${orgId} is shared by ${userCount} users. Only decoupling user.`);
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { organizationId: null }
+      });
+    } else {
+      console.log(`[DemoReset] Org ${orgId} is exclusive to this user. Cleaning up and deleting.`);
+      
+      // Clear Assessment Results
+      await prisma.assessmentResult.deleteMany({
+        where: { organizationId: orgId }
+      });
 
-    // 4. Dissociate all users from this organization
-    // (In case multiple demo users were somehow linked, though unlikely here)
-    await prisma.user.updateMany({
-      where: { organizationId: orgId },
-      data: { organizationId: null }
-    });
+      // Clear Subscriptions
+      await prisma.subscription.deleteMany({
+        where: { organizationId: orgId }
+      });
 
-    // 5. Delete the Organization
-    await prisma.organization.delete({
-      where: { id: orgId }
-    });
+      // Decouple user first to avoid FK constraint on Organization delete
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { organizationId: null }
+      });
 
-    console.log(`[DemoReset] Successfully cleared data for org: ${orgId}`);
+      // Delete the Organization
+      await prisma.organization.delete({
+        where: { id: orgId }
+      });
+    }
+
+    console.log(`[DemoReset] Successfully reset journey for user: ${user.email}`);
 
     revalidatePath("/dashboard", "layout");
     revalidatePath("/onboarding");

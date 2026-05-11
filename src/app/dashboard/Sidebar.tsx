@@ -10,12 +10,14 @@ import {
   UserCircle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import ResetDemoButton from "./ResetDemoButton";
 
 interface SidebarProps {
   userEmail: string;
   isNGO: boolean;
   orgName?: string;
   signOutAction: (formData: FormData) => void;
+  isDemoUser?: boolean;
 }
 
 interface SidebarLink {
@@ -31,7 +33,7 @@ interface SidebarSection {
   links: SidebarLink[];
 }
 
-export default function Sidebar({ userEmail, isNGO, orgName, signOutAction }: SidebarProps) {
+export default function Sidebar({ userEmail, isNGO, orgName, signOutAction, isDemoUser }: SidebarProps) {
   const pathname = usePathname();
 
   const sections: SidebarSection[] = [
@@ -145,6 +147,8 @@ export default function Sidebar({ userEmail, isNGO, orgName, signOutAction }: Si
              </div>
           </div>
         </div>
+        
+        {isDemoUser && <ResetDemoButton />}
         
         <form action={signOutAction}>
           <button

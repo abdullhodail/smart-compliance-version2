@@ -61,6 +61,13 @@ export default async function DashboardLayout({
   console.log("[DashboardLayout] organizationId exists, rendering children");
 
   const isNGO = dbUser?.organization?.entityType === "NGO";
+  const DEMO_EMAILS = [
+    "ecommerce_test@gmail.com",
+    "sme_test@gmail.com",
+    "ngo_test@gmail.com",
+    "demo_journey@gmail.com"
+  ];
+  const isDemoUser = user.email ? DEMO_EMAILS.includes(user.email.toLowerCase()) : false;
 
   return (
     <div className="min-h-screen bg-gray-50 flex" dir="rtl">
@@ -70,6 +77,7 @@ export default async function DashboardLayout({
         isNGO={isNGO} 
         orgName={dbUser?.organization?.name}
         signOutAction={signOut} 
+        isDemoUser={isDemoUser}
       />
 
       {/* Main Content */}
